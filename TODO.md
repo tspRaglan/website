@@ -11,7 +11,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 ## 🎨 Design & Branding
 - [ ] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
 - [ ] **Custom Favicons:** Create unique tab icons for each subpage (`sdp`, `thanksgary`).
-- [ ] **Logo Random Button:** Use the Raglan logo as the icon for the "Random" button in the player.
+- [ ] **Logo Random Redirect:** Implement the Raglan logo as a button that redirects the user to a random subproject (e.g., from `thanksgary` to `sdp`).
 
 ## 🚀 Feature Ideas
 - [ ] **Project Katherine:** Create a new dedicated video player project for Katherine.
