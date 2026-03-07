@@ -6,7 +6,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 
 ## 🛠️ Critical Maintenance
 - [x] **TOMORROW: Verify Live Site**: Confirm `raglan.au` is live on GitHub Pages with working SSL (HTTPS).
-- [ ] **Enforce HTTPS**: Enable the "Enforce HTTPS" toggle in GitHub Pages settings once DNS is verified.
+- [x] **Enforce HTTPS**: Enable the "Enforce HTTPS" toggle in GitHub Pages settings once DNS is verified.
 - [ ] **Recompile Video:** Re-encode `wefmyeyeafterward.mp4` with the correct visuals (currently uses temporary visuals from `5347.mp4`).
 - [ ] **Backup website repo:** Ensure the repository for the website is properly backed up offline/online.
 
