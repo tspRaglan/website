@@ -26,6 +26,12 @@ These records are required in GoDaddy DNS Management for the site to function:
 | **A** | `@` | `75.2.60.5` | Points main domain to Netlify |
 | **CNAME** | `www` | `tspraglan.netlify.app` | Points www subdomain to Netlify |
 | **TXT** | `verified-for-netlify` | `tspraglan.netlify.app` | Proves domain ownership to Netlify |
+| **MX** | `@` | `ASPMX.L.GOOGLE.COM` (Priority 1) | Google Workspace Mail |
+| **MX** | `@` | `ALT1.ASPMX.L.GOOGLE.COM` (Priority 5) | Google Workspace Mail |
+| **MX** | `@` | `ALT2.ASPMX.L.GOOGLE.COM` (Priority 5) | Google Workspace Mail |
+| **MX** | `@` | `ALT3.ASPMX.L.GOOGLE.COM` (Priority 10) | Google Workspace Mail |
+| **MX** | `@` | `ALT4.ASPMX.L.GOOGLE.COM` (Priority 10) | Google Workspace Mail |
+| **TXT** | `@` | `v=spf1 include:_spf.google.com ~all` | Google Workspace SPF |
 
 ## 🚀 How to Update
 1.  Make changes to the code in the local folder.
