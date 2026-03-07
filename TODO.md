@@ -5,7 +5,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 ---
 
 ## 🛠️ Critical Maintenance
-- [ ] **TOMORROW: Verify Live Site**: Confirm `raglan.au` is live on GitHub Pages with working SSL (HTTPS).
+- [x] **TOMORROW: Verify Live Site**: Confirm `raglan.au` is live on GitHub Pages with working SSL (HTTPS).
 - [ ] **Enforce HTTPS**: Enable the "Enforce HTTPS" toggle in GitHub Pages settings once DNS is verified.
 - [ ] **Recompile Video:** Re-encode `wefmyeyeafterward.mp4` with the correct visuals (currently uses temporary visuals from `5347.mp4`).
 - [ ] **Backup website repo:** Ensure the repository for the website is properly backed up offline/online.
@@ -19,7 +19,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [ ] **Dynamic Templates:** Modify the `video-player-template` to accept a JSON playlist file instead of hardcoded HTML.
 - [ ] **Mobile Touch Optimization:** Ensure the volume slider and buttons are easy to use on smaller touch screens.
 - [x] **URL Masking:** Research/implement a way to keep the address bar showing `raglan.au` even when navigating subprojects.
-- [ ] **Bypass Click-to-Start:** Refactor the start logic to either remove or automate the "click to start" overlay where browser policies allow.
+- [x] **Bypass Click-to-Start:** Refactor the start logic to either remove or automate the "click to start" overlay where browser policies allow.
 
 ## 📱 Social & Marketing
 - [ ] **Social Automation:** Setup social media accounts to sync with website content.
