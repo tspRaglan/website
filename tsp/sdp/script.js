@@ -41,9 +41,7 @@ videoB.controls = false;
 
 // check if already started via root index or previous page
 if (sessionStorage.getItem('tsp_started') === 'true') {
-    // we need to wait for a tiny bit or user interaction in some strict browsers, 
-    // but usually, if coming from another page in the same session, it's allowed.
-    // to be safe, we'll try to start, and if it fails, the overlay is still there.
+    // Hidden immediately if already started or in iframe started state
     window.addEventListener('load', () => {
         startExperience();
     });
@@ -140,16 +138,17 @@ function onVideoEnded() {
 }
 
 function triggerRedirect() {
-    // If we have specific targets, pick one at random
+    let target = '';
     if (redirectTargets.length > 0) {
-        const target = redirectTargets[Math.floor(Math.random() * redirectTargets.length)];
-        window.location.href = target;
+        target = redirectTargets[Math.floor(Math.random() * redirectTargets.length)];
     } else {
-        // Fallback: This would ideally list directories dynamically, 
-        // but since we can't do that purely in client-side JS without a backend/API,
-        // we use the current known structure as a default.
-        window.location.href = '../thanksgary/index.html';
+        target = '../thanksgary/index.html';
     }
+
+    // if in iframe, tell parent to change src or change our own href
+    // since we want to keep the root URL, we should ideally change the iframe src
+    // but a simple href change inside the iframe also keeps the root URL in the address bar!
+    window.location.href = target;
 }
 
 function jumpToVideo(index) {
