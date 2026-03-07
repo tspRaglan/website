@@ -31,34 +31,33 @@
 
         /* --- LOGO STYLING --- */
         #logo-container {
-            width: 600px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.3s ease;
             position: relative;
-            overflow: hidden;
-            /* CROP happens here */
-            background-color: black;
+            overflow: visible;
+            /* allows the glow to spread out */
         }
 
         #raglan-logo {
-            width: 130%;
-            /* Zoomed in slightly */
-            height: 130%;
-            object-fit: cover;
-            object-position: top;
-            /* Pushes the 'writing' off the bottom */
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             mix-blend-mode: screen;
 
-            /* Enhanced filter for visibility and color cycling */
-            animation: pulse 4s infinite ease-in-out, glowCycle 5s infinite linear;
+            /* CROP: Hide the bottom ~15% of the image where the writing is */
+            clip-path: inset(0 0 12% 0);
+
+            /* Enhanced filter: High brightness makes it white, hue-rotate cycles the shadow color */
+            animation: pulse 4s infinite ease-in-out, glowCycle 6s infinite linear;
         }
 
         #logo-container:hover {
-            transform: scale(1.03);
+            transform: scale(1.05);
         }
 
         /* --- ANIMATIONS --- */
@@ -67,30 +66,30 @@
             0%,
             100% {
                 transform: scale(1.0);
-                opacity: 0.9;
+                filter: brightness(1.5);
             }
 
             50% {
-                transform: scale(1.05);
-                opacity: 1;
+                transform: scale(1.1);
+                filter: brightness(2);
             }
         }
 
         @keyframes glowCycle {
             0% {
-                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff);
+                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #00f2ff) drop-shadow(0 0 30px #00f2ff) hue-rotate(0deg);
             }
 
             33% {
-                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #7000ff) drop-shadow(0 0 20px #7000ff);
+                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #7000ff) drop-shadow(0 0 30px #7000ff) hue-rotate(120deg);
             }
 
             66% {
-                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #ff00c8) drop-shadow(0 0 20px #ff00c8);
+                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #ff00c8) drop-shadow(0 0 30px #ff00c8) hue-rotate(240deg);
             }
 
             100% {
-                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff);
+                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #00f2ff) drop-shadow(0 0 30px #00f2ff) hue-rotate(360deg);
             }
         }
     </style>
