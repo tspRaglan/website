@@ -31,8 +31,9 @@
 
         /* --- LOGO STYLING --- */
         #logo-container {
-            width: 400px;
-            height: 400px;
+            width: 800px;
+            /* Twice as big as previous 400px */
+            height: 800px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -49,12 +50,13 @@
             object-fit: cover;
             /* This "crops" the JPG square to the container */
             mix-blend-mode: screen;
-            /* Makes the black background of the JPG transparent on the black page */
-            animation: pulse 3s infinite ease-in-out, glowCycle 6s infinite linear;
+            /* Convert green to white: grayscale makes it gray, brightness(20) pushes it to pure white */
+            filter: grayscale(1) brightness(20);
+            animation: pulse 4s infinite ease-in-out, glowCycle 6s infinite linear;
         }
 
         #logo-container:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         /* --- ANIMATIONS --- */
@@ -66,7 +68,8 @@
             }
 
             50% {
-                transform: scale(1.04);
+                transform: scale(1.03);
+                /* Subtle pulse for large size */
             }
         }
 
