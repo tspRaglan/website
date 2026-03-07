@@ -1,10 +1,22 @@
+// Base URL for external video hosting (e.g., Cloudflare R2, AWS S3)
+// Leave empty "" to use local "videos/" folder
+const BASE_VIDEO_URL = "";
+
 const playlist = [
-    { url: 'videos/5347.mp4', title: '5347' },
-    { url: 'videos/meow meow.mp4', title: 'meow meow' },
-    { url: 'videos/quality to order.mp4', title: 'quality to order' },
-    { url: 'videos/sdp.mp4', title: 'sdp' },
-    { url: 'videos/wefmyeyeafterward.mp4', title: 'wefmyeyeafterward' }
+    { url: '5347.mp4', title: '5347' },
+    { url: 'meow meow.mp4', title: 'meow meow' },
+    { url: 'quality to order.mp4', title: 'quality to order' },
+    { url: 'sdp.mp4', title: 'sdp' },
+    { url: 'wefmyeyeafterward.mp4', title: 'wefmyeyeafterward' }
 ];
+
+function getVideoUrl(filename) {
+    if (BASE_VIDEO_URL) {
+        // Ensure white spaces are encoded for external URLs
+        return `${BASE_VIDEO_URL}/${filename.replace(/ /g, '%20')}`;
+    }
+    return `videos/${filename}`;
+}
 
 let currentIndex = 0;
 let isPlaying = false;
@@ -75,7 +87,7 @@ videoB.addEventListener('loadeddata', () => { if (activePlayer === videoB) updat
 function startExperience(isAutoStart = false) {
     // Setup first video
     playedTracks.add(currentIndex);
-    activePlayer.src = playlist[currentIndex].url;
+    activePlayer.src = getVideoUrl(playlist[currentIndex].url);
     activePlayer.muted = false;
     inactivePlayer.muted = false;
 
@@ -143,9 +155,10 @@ function preloadNext() {
     const nextIdx = getNextIndex();
     if (nextIdx === -1) return; // Nothing left to preload
 
+    const nextUrl = getVideoUrl(playlist[nextIdx].url);
     // Only set src if it's different to avoid reloading unnecessarily
-    if (!inactivePlayer.src || !inactivePlayer.src.includes(playlist[nextIdx].url.replace(' ', '%20'))) {
-        inactivePlayer.src = playlist[nextIdx].url;
+    if (!inactivePlayer.src || !inactivePlayer.src.includes(nextUrl.replace(' ', '%20'))) {
+        inactivePlayer.src = nextUrl;
         inactivePlayer.load(); // Request browser to preload
     }
 }
@@ -185,9 +198,10 @@ function jumpToVideo(index) {
     currentIndex = index;
     playedTracks.add(currentIndex);
 
+    const nextUrl = getVideoUrl(playlist[currentIndex].url);
     // We assume inactivePlayer already has the correct src loaded (if it was sequential)
-    if (!inactivePlayer.src || !inactivePlayer.src.includes(playlist[currentIndex].url.replace(' ', '%20'))) {
-        inactivePlayer.src = playlist[currentIndex].url;
+    if (!inactivePlayer.src || !inactivePlayer.src.includes(nextUrl.replace(' ', '%20'))) {
+        inactivePlayer.src = nextUrl;
         inactivePlayer.load();
     }
 

@@ -214,7 +214,11 @@
     </div>
 
     <script>
-        // --- 1. PLAYLIST ---
+        // --- 1. PLAYLIST & CONFIG ---
+        // Base URL for external hosting (e.g., Cloudflare R2, AWS S3)
+        // Leave empty "" to use local folders
+        const BASE_VIDEO_URL = "";
+
         const playlist = [
             { file: 'gopher1.mp3', title: 'gopher no.1' },
             { file: 'quitetoo.mp3', title: 'quite too' },
@@ -222,6 +226,13 @@
             { file: 'thanksgary.mp3', title: 'thanks gary!' },
             { file: 'xavier.mp3', title: 'xavier' }
         ];
+
+        function getAssetUrl(filename, type = 'audio') {
+            if (BASE_VIDEO_URL) {
+                return `${BASE_VIDEO_URL}/${filename.replace(/ /g, '%20')}`;
+            }
+            return filename; // For thanksgary, files are currently in the same root
+        }
 
         let currentIndex = 0;
         let audioPlayer = new Audio();
@@ -259,7 +270,8 @@
                 triggerRedirect();
                 return;
             }
-            audioPlayer.src = playlist[index].file;
+            const assetUrl = getAssetUrl(playlist[index].file, 'audio');
+            audioPlayer.src = assetUrl;
             document.getElementById('track-title').innerText = playlist[index].title;
             playedTracks.add(index);
         }
@@ -362,7 +374,16 @@
                 sessionStorage.setItem('tsp_started', 'true');
                 if (screen) screen.remove();
                 if (playerUI) playerUI.style.display = 'block';
-                if (video) video.play().catch(e => console.log("Video error:", e));
+
+                if (video) {
+                    // Update video src if external URL is provided
+                    const videoSrc = getAssetUrl('thanksGary.mp4', 'video');
+                    if (video.src !== videoSrc) {
+                        video.src = videoSrc;
+                        video.load();
+                    }
+                    video.play().catch(e => console.log("Video error:", e));
+                }
 
                 isPlaying = true;
                 document.getElementById('play-pause-btn').innerHTML = "&#10074;&#10074;";

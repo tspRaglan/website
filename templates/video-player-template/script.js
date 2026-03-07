@@ -1,10 +1,21 @@
+// Base URL for external video hosting (e.g., Cloudflare R2, AWS S3)
+// Leave empty "" to use local "videos/" folder
+const BASE_VIDEO_URL = "";
+
 const playlist = [
-    { url: 'videos/video1.mp4', title: 'video 1' },
-    { url: 'videos/video2.mp4', title: 'video 2' },
-    { url: 'videos/video3.mp4', title: 'video 3' },
-    { url: 'videos/video4.mp4', title: 'video 4' },
-    { url: 'videos/video5.mp4', title: 'video 5' }
+    { url: 'video1.mp4', title: 'video 1' },
+    { url: 'video2.mp4', title: 'video 2' },
+    { url: 'video3.mp4', title: 'video 3' },
+    { url: 'video4.mp4', title: 'video 4' },
+    { url: 'video5.mp4', title: 'video 5' }
 ];
+
+function getVideoUrl(filename) {
+    if (BASE_VIDEO_URL) {
+        return `${BASE_VIDEO_URL}/${filename.replace(/ /g, '%20')}`;
+    }
+    return `videos/${filename}`;
+}
 
 let currentIndex = 0;
 let isPlaying = false;
@@ -71,7 +82,7 @@ function startExperience() {
 
     // Setup first video
     playedTracks.add(currentIndex);
-    activePlayer.src = playlist[currentIndex].url;
+    activePlayer.src = getVideoUrl(playlist[currentIndex].url);
     activePlayer.muted = false; // Unmute user initiated playback
     inactivePlayer.muted = false;
 
@@ -120,9 +131,10 @@ function preloadNext() {
     const nextIdx = getNextIndex();
     if (nextIdx === -1) return; // Nothing left to preload
 
+    const nextUrl = getVideoUrl(playlist[nextIdx].url);
     // Only set src if it's different to avoid reloading unnecessarily
-    if (!inactivePlayer.src || !inactivePlayer.src.includes(playlist[nextIdx].url.replace(' ', '%20'))) {
-        inactivePlayer.src = playlist[nextIdx].url;
+    if (!inactivePlayer.src || !inactivePlayer.src.includes(nextUrl.replace(' ', '%20'))) {
+        inactivePlayer.src = nextUrl;
         inactivePlayer.load(); // Request browser to preload
     }
 }
@@ -161,9 +173,10 @@ function jumpToVideo(index) {
     currentIndex = index;
     playedTracks.add(currentIndex);
 
+    const nextUrl = getVideoUrl(playlist[currentIndex].url);
     // We assume inactivePlayer already has the correct src loaded (if it was sequential)
-    if (!inactivePlayer.src || !inactivePlayer.src.includes(playlist[currentIndex].url.replace(' ', '%20'))) {
-        inactivePlayer.src = playlist[currentIndex].url;
+    if (!inactivePlayer.src || !inactivePlayer.src.includes(nextUrl.replace(' ', '%20'))) {
+        inactivePlayer.src = nextUrl;
         inactivePlayer.load();
     }
 
