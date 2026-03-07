@@ -126,6 +126,9 @@
     <iframe id="main-shell" src="tsp/sdp/index.html" allow="autoplay; fullscreen"></iframe>
 
     <script>
+        // Clear session on page load so a browser refresh always acts as a "Reset to Home"
+        sessionStorage.removeItem('tsp_started');
+
         function startExperience() {
             sessionStorage.setItem('tsp_started', 'true');
             showExperience();
@@ -139,11 +142,6 @@
 
         function showExperience() {
             document.getElementById('start-screen').style.display = 'none';
-        }
-
-        // if already started, show immediately
-        if (sessionStorage.getItem('tsp_started') === 'true') {
-            showExperience();
         }
 
         // Listen for internal "autoplay success" from subprojects
