@@ -9,6 +9,20 @@ this is a reusable template for a 5-video full-screen player with seamless trans
 3.  **redirects**: update the `redirectTargets` array in `script.js` to point to the next project or page.
 4.  **styling**: customize `styles.css` for your theme (currently uses glassmorphism and courier new).
 
+## bandwidth & compression
+
+**critical**: to stay within hosting limits (e.g. netlify's 100gb), all videos **must** be compressed before upload.
+
+### recommended ffmpeg command
+run this from your terminal to squash video size while keeping quality:
+
+```bash
+ffmpeg -i input.mp4 -vcodec libx264 -crf 28 -preset faster -acodec aac -b:a 128k output.mp4
+```
+
+- **crf 28**: provides a good balance of quality vs file size.
+- **aac 128k**: standard audio compression for web.
+
 ## features
 
 - **seamless transitions**: uses dual video tags to preload the next track.
