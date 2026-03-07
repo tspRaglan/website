@@ -47,12 +47,11 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            mix-blend-mode: screen;
 
-            /* CROP: Hide the bottom ~15% of the image where the writing is */
+            /* CROP: Hide the bottom part where the text is */
             clip-path: inset(0 0 12% 0);
 
-            /* Enhanced filter: High brightness makes it white, hue-rotate cycles the shadow color */
+            /* The glow now follows the exact lines of the transparent PNG */
             animation: pulse 4s infinite ease-in-out, glowCycle 6s infinite linear;
         }
 
@@ -66,30 +65,30 @@
             0%,
             100% {
                 transform: scale(1.0);
-                filter: brightness(1.5);
+                filter: brightness(1);
             }
 
             50% {
-                transform: scale(1.1);
-                filter: brightness(2);
+                transform: scale(1.08);
+                filter: brightness(1.3);
             }
         }
 
         @keyframes glowCycle {
             0% {
-                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #00f2ff) drop-shadow(0 0 30px #00f2ff) hue-rotate(0deg);
+                filter: drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff) hue-rotate(0deg);
             }
 
             33% {
-                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #7000ff) drop-shadow(0 0 30px #7000ff) hue-rotate(120deg);
+                filter: drop-shadow(0 0 10px #7000ff) drop-shadow(0 0 20px #7000ff) hue-rotate(120deg);
             }
 
             66% {
-                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #ff00c8) drop-shadow(0 0 30px #ff00c8) hue-rotate(240deg);
+                filter: drop-shadow(0 0 10px #ff00c8) drop-shadow(0 0 20px #ff00c8) hue-rotate(240deg);
             }
 
             100% {
-                filter: grayscale(1) brightness(10) drop-shadow(0 0 15px #00f2ff) drop-shadow(0 0 30px #00f2ff) hue-rotate(360deg);
+                filter: drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff) hue-rotate(360deg);
             }
         }
     </style>
@@ -98,7 +97,7 @@
 <body>
     <div id="start-screen">
         <div id="logo-container" onclick="startExperience()">
-            <img src="Raglan Logo.jpg" id="raglan-logo" alt="raglan logo">
+            <img src="Raglan Logo.png" id="raglan-logo" alt="raglan logo">
         </div>
     </div>
 
