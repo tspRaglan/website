@@ -81,6 +81,17 @@
         if (sessionStorage.getItem('tsp_started') === 'true') {
             showExperience();
         }
+
+        // Listen for internal "autoplay success" from subprojects
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'tsp_autoplay_success') {
+                console.log("Subproject successfully autoplays. Bypassing root overlay.");
+                showExperience();
+            }
+        });
+
+        // Always show the shell container but use the start-screen as a literal overlay
+        document.getElementById('main-shell').style.display = 'block';
     </script>
 </body>
 

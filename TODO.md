@@ -17,7 +17,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [ ] **Project Katherine:** Create a new dedicated video player project for Katherine.
 - [ ] **Dynamic Templates:** Modify the `video-player-template` to accept a JSON playlist file instead of hardcoded HTML.
 - [ ] **Mobile Touch Optimization:** Ensure the volume slider and buttons are easy to use on smaller touch screens.
-- [ ] **URL Masking:** Research/implement a way to keep the address bar showing `raglan.au` even when navigating subprojects.
+- [x] **URL Masking:** Research/implement a way to keep the address bar showing `raglan.au` even when navigating subprojects.
 - [ ] **Bypass Click-to-Start:** Refactor the start logic to either remove or automate the "click to start" overlay where browser policies allow.
 
 ## 📱 Social & Marketing

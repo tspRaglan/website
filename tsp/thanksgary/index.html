@@ -234,16 +234,22 @@
         audioPlayer.volume = 0.5;
 
         // check if already started via root index or previous page
-        if (sessionStorage.getItem('tsp_started') === 'true') {
-            window.addEventListener('load', () => {
-                startExperience();
-            });
+        // OR: attempt to bypass "click to start" if browser allows
+        window.addEventListener('load', () => {
+            autoStartAttempt();
+        });
+
+        function autoStartAttempt() {
+            try {
+                startExperience(true); // true = auto-start mode
+            } catch (e) {
+                console.log("Automatic unmuted start blocked by browser.");
+            }
         }
 
         // --- 2. ERROR CHECKING ---
         audioPlayer.addEventListener('error', function (e) {
             console.log("Audio Error:", e);
-            alert("error: could not load audio file. please check filenames.");
             document.getElementById('track-title').innerText = "file not found";
         });
 
@@ -336,44 +342,42 @@
         }
 
         // --- 5. START FUNCTION (With 'Gary First' Logic) ---
-        function startExperience() {
-            sessionStorage.setItem('tsp_started', 'true');
-            // Remove Start Screen
-            const screen = document.getElementById('start-screen');
-            if (screen) screen.remove();
-
-            // Show Player
-            document.getElementById('player-container').style.display = 'block';
-
-            // Play Video
+        function startExperience(isAutoStart = false) {
             const video = document.getElementById('bg-video');
-            if (video) video.play().catch(e => console.log("Video error:", e));
+            const playerUI = document.getElementById('player-container');
+            const screen = document.getElementById('start-screen');
 
-            try {
-                // A. Shuffle everything randomly (Original Logic)
-                shuffle(playlist);
-
-                // B. Find 'thanks gary!' and swap it to the front
-                const garyIndex = playlist.findIndex(track => track.title === 'thanks gary!');
-                if (garyIndex > 0) {
-                    // Swap whatever is at [0] with Gary
-                    [playlist[0], playlist[garyIndex]] = [playlist[garyIndex], playlist[0]];
-                }
-
-                // C. Play the first track (which is now guaranteed to be Gary)
-                currentIndex = 0;
-                loadTrack(currentIndex);
-
-                audioPlayer.play().then(() => {
-                    isPlaying = true;
-                }).catch(e => {
-                    console.log("Autoplay blocked:", e);
-                    document.getElementById('play-pause-btn').innerHTML = "&#9654;";
-                    isPlaying = false;
-                });
-            } catch (error) {
-                alert("Script Error: " + error.message);
+            // A. Prepare Playlist
+            shuffle(playlist);
+            const garyIndex = playlist.findIndex(track => track.title === 'thanks gary!');
+            if (garyIndex > 0) {
+                [playlist[0], playlist[garyIndex]] = [playlist[garyIndex], playlist[0]];
             }
+            currentIndex = 0;
+            loadTrack(currentIndex);
+
+            // B. Attempt Playback
+            audioPlayer.play().then(() => {
+                // Success!
+                sessionStorage.setItem('tsp_started', 'true');
+                if (screen) screen.remove();
+                if (playerUI) playerUI.style.display = 'block';
+                if (video) video.play().catch(e => console.log("Video error:", e));
+
+                isPlaying = true;
+                document.getElementById('play-pause-btn').innerHTML = "&#10074;&#10074;";
+
+                // Notify parent
+                if (window.parent !== window) {
+                    window.parent.postMessage({ type: 'tsp_autoplay_success' }, '*');
+                }
+            }).catch(e => {
+                console.log("Autoplay blocked:", e);
+                // If it failed and we are NOT auto-starting, show error
+                if (!isAutoStart) {
+                    alert("Autoplay failed. Please interact with the site.");
+                }
+            });
         }
 
         audioPlayer.addEventListener('ended', playNext);

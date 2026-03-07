@@ -40,11 +40,20 @@ videoA.controls = false;
 videoB.controls = false;
 
 // check if already started via root index or previous page
-if (sessionStorage.getItem('tsp_started') === 'true') {
-    // Hidden immediately if already started or in iframe started state
-    window.addEventListener('load', () => {
-        startExperience();
-    });
+// OR: attempt to bypass "click to start" if browser allows
+window.addEventListener('load', () => {
+    // We attempt to start unmuted. If it works, we notify the parent.
+    // This allows the parent to hide the root "click to start" screen.
+    autoStartAttempt();
+});
+
+function autoStartAttempt() {
+    // Attempt playback. Errors catch autoplay blocks.
+    try {
+        startExperience(true); // true = auto-start mode
+    } catch (e) {
+        console.log("Automatic unmuted start blocked by browser.");
+    }
 }
 
 // Event Listeners
@@ -63,20 +72,35 @@ videoB.addEventListener('ended', onVideoEnded);
 videoA.addEventListener('loadeddata', () => { if (activePlayer === videoA) updateTitle(); });
 videoB.addEventListener('loadeddata', () => { if (activePlayer === videoB) updateTitle(); });
 
-function startExperience() {
-    sessionStorage.setItem('tsp_started', 'true');
-    startScreen.style.display = 'none';
-    playerContainer.style.display = 'block';
-
+function startExperience(isAutoStart = false) {
     // Setup first video
     playedTracks.add(currentIndex);
     activePlayer.src = playlist[currentIndex].url;
-    activePlayer.muted = false; // Unmute user initiated playback
+    activePlayer.muted = false;
     inactivePlayer.muted = false;
 
-    playVideo(activePlayer);
-    updateTitle();
-    preloadNext();
+    activePlayer.play().then(() => {
+        // Success! Hide overlays
+        sessionStorage.setItem('tsp_started', 'true');
+        startScreen.style.display = 'none';
+        playerContainer.style.display = 'block';
+        isPlaying = true;
+        playPauseBtn.innerHTML = '&#10074;&#10074;';
+        updateTitle();
+        preloadNext();
+
+        // Notify parent that we successfully bypassed the start button
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'tsp_autoplay_success' }, '*');
+        }
+    }).catch(e => {
+        console.warn("Autoplay attempt failed:", e);
+        // If this was an manual click, it shouldn't really fail, but if it does, 
+        // we keep the screen visible. If it was auto, we definitely do nothing.
+        if (!isAutoStart) {
+            alert("Please click the button to start the experience.");
+        }
+    });
 }
 
 function updateTitle() {
