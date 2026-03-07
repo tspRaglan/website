@@ -31,29 +31,30 @@
 
         /* --- LOGO STYLING --- */
         #logo-container {
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.3s ease;
             position: relative;
-            /* "Crop" happens by restricting container size and using object-fit */
             overflow: hidden;
+            /* Provides "crop" to the container edges */
         }
 
         #raglan-logo {
-            width: 180%;
-            /* Increased size to "zoom in" for cropping effect */
-            height: 180%;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* This "crops" the JPG square to the container */
+            mix-blend-mode: screen;
+            /* Makes the black background of the JPG transparent on the black page */
             animation: pulse 3s infinite ease-in-out, glowCycle 6s infinite linear;
         }
 
         #logo-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         /* --- ANIMATIONS --- */
@@ -65,25 +66,25 @@
             }
 
             50% {
-                transform: scale(1.08);
+                transform: scale(1.04);
             }
         }
 
         @keyframes glowCycle {
             0% {
-                filter: drop-shadow(0 0 15px #00f2ff);
+                filter: brightness(1.2) drop-shadow(0 0 15px #00f2ff);
             }
 
             33% {
-                filter: drop-shadow(0 0 20px #7000ff);
+                filter: brightness(1.2) drop-shadow(0 0 20px #7000ff);
             }
 
             66% {
-                filter: drop-shadow(0 0 25px #ff00c8);
+                filter: brightness(1.2) drop-shadow(0 0 25px #ff00c8);
             }
 
             100% {
-                filter: drop-shadow(0 0 15px #00f2ff);
+                filter: brightness(1.2) drop-shadow(0 0 15px #00f2ff);
             }
         }
     </style>
@@ -92,7 +93,7 @@
 <body>
     <div id="start-screen">
         <div id="logo-container" onclick="startExperience()">
-            <img src="raglan_logo2.png" id="raglan-logo" alt="raglan logo">
+            <img src="Raglan Logo.jpg" id="raglan-logo" alt="raglan logo">
         </div>
     </div>
 
