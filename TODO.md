@@ -15,6 +15,8 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [x] **Custom Favicons:** Create unique tab icons for each subpage (`sdp`, `thanksgary`).
 
 ## 🚀 Feature Ideas
+- [ ] **Tab Titles:** Ensure the title of the browser tabs all read exactly `raglan.au`.
+- [ ] **Refresh / Home Link:** Fix the "refresh icon" so that it properly relinks back to the main index page.
 - [ ] **Project Katherine:** Create a new dedicated video player project for Katherine.
 - [ ] **Dynamic Templates:** Modify the `video-player-template` to accept a JSON playlist file instead of hardcoded HTML.
 - [ ] **Mobile Touch Optimization:** Ensure the volume slider and buttons are easy to use on smaller touch screens.
