@@ -101,6 +101,17 @@
                 color: #00f2ff;
             }
         }
+
+        /* --- IFRAME SHELL --- */
+        #main-shell {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -111,17 +122,22 @@
         </div>
     </div>
 
-    <iframe id="main-shell" src="./tsp/sdp/index.html"></iframe>
+    <iframe id="main-shell" src="./tsp/sdp/index.html" allow="autoplay; fullscreen"></iframe>
 
     <script>
         function startExperience() {
             sessionStorage.setItem('tsp_started', 'true');
             showExperience();
+
+            // Tell the iframe to start playback since the user just clicked
+            const iframe = document.getElementById('main-shell');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'tsp_start_playback' }, '*');
+            }
         }
 
         function showExperience() {
             document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('main-shell').style.display = 'block';
         }
 
         // if already started, show immediately

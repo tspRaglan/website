@@ -50,14 +50,26 @@ videoA.controls = false;
 videoB.controls = false;
 
 // check if already started via root index or previous page
-if (sessionStorage.getItem('tsp_started') === 'true') {
-    // we need to wait for a tiny bit or user interaction in some strict browsers, 
-    // but usually, if coming from another page in the same session, it's allowed.
-    // to be safe, we'll try to start, and if it fails, the overlay is still there.
-    window.addEventListener('load', () => {
-        startExperience();
-    });
+// OR: attempt to bypass "click to start" if browser allows
+window.addEventListener('load', () => {
+    autoStartAttempt();
+});
+
+function autoStartAttempt() {
+    // Attempt playback. Errors catch autoplay blocks.
+    try {
+        startExperience(true); // true = auto-start mode
+    } catch (e) {
+        console.log("Automatic unmuted start blocked by browser.");
+    }
 }
+
+// Listen for explicit start command from parent iframe shell
+window.addEventListener('message', (event) => {
+    if (event.data.type === 'tsp_start_playback') {
+        startExperience(false);
+    }
+});
 
 // Event Listeners
 startBtn.addEventListener('click', startExperience);
@@ -75,20 +87,44 @@ videoB.addEventListener('ended', onVideoEnded);
 videoA.addEventListener('loadeddata', () => { if (activePlayer === videoA) updateTitle(); });
 videoB.addEventListener('loadeddata', () => { if (activePlayer === videoB) updateTitle(); });
 
-function startExperience() {
-    sessionStorage.setItem('tsp_started', 'true');
-    startScreen.style.display = 'none';
-    playerContainer.style.display = 'block';
-
+function startExperience(isAutoStart = false) {
     // Setup first video
     playedTracks.add(currentIndex);
     activePlayer.src = getVideoUrl(playlist[currentIndex].url);
     activePlayer.muted = false; // Unmute user initiated playback
     inactivePlayer.muted = false;
 
-    playVideo(activePlayer);
+    // Immediately hide start screen if we know session started or if it's not an auto-start (user clicked)
+    if (sessionStorage.getItem('tsp_started') === 'true' || !isAutoStart) {
+        startScreen.style.display = 'none';
+        playerContainer.style.display = 'block';
+    }
+
+    playVideo(activePlayer, isAutoStart);
     updateTitle();
     preloadNext();
+}
+
+function playVideo(player, isAutoStart = false) {
+    player.play().then(() => {
+        // Success! Hide overlays
+        sessionStorage.setItem('tsp_started', 'true');
+        startScreen.style.display = 'none';
+        playerContainer.style.display = 'block';
+        isPlaying = true;
+        playPauseBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'tsp_autoplay_success' }, '*');
+        }
+    }).catch(e => {
+        console.error("Autoplay prevented:", e);
+        isPlaying = false;
+        playPauseBtn.innerHTML = '&#9654;'; // Play icon
+        if (!isAutoStart && sessionStorage.getItem('tsp_started') !== 'true') {
+            alert("Please click the button to start the experience.");
+        }
+    });
 }
 
 function updateTitle() {
@@ -203,16 +239,7 @@ function jumpToVideo(index) {
     }, 1500);
 }
 
-function playVideo(player) {
-    player.play().then(() => {
-        isPlaying = true;
-        playPauseBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
-    }).catch(e => {
-        console.error("Autoplay prevented:", e);
-        isPlaying = false;
-        playPauseBtn.innerHTML = '&#9654;'; // Play icon
-    });
-}
+// Handled in playVideo replacement above
 
 function togglePlayPause() {
     if (isPlaying) {

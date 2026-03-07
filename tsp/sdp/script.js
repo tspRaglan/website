@@ -54,8 +54,6 @@ videoB.controls = false;
 // check if already started via root index or previous page
 // OR: attempt to bypass "click to start" if browser allows
 window.addEventListener('load', () => {
-    // We attempt to start unmuted. If it works, we notify the parent.
-    // This allows the parent to hide the root "click to start" screen.
     autoStartAttempt();
 });
 
@@ -67,6 +65,14 @@ function autoStartAttempt() {
         console.log("Automatic unmuted start blocked by browser.");
     }
 }
+
+// Listen for explicit start command from parent iframe shell
+window.addEventListener('message', (event) => {
+    if (event.data.type === 'tsp_start_playback') {
+        console.log("Received start command from root shell.");
+        startExperience(false);
+    }
+});
 
 // Event Listeners
 startBtn.addEventListener('click', startExperience);
@@ -91,6 +97,12 @@ function startExperience(isAutoStart = false) {
     activePlayer.muted = false;
     inactivePlayer.muted = false;
 
+    // Immediately hide start screen if we know session started or if it's not an auto-start (user clicked)
+    if (sessionStorage.getItem('tsp_started') === 'true' || !isAutoStart) {
+        startScreen.style.display = 'none';
+        playerContainer.style.display = 'block';
+    }
+
     activePlayer.play().then(() => {
         // Success! Hide overlays
         sessionStorage.setItem('tsp_started', 'true');
@@ -107,9 +119,9 @@ function startExperience(isAutoStart = false) {
         }
     }).catch(e => {
         console.warn("Autoplay attempt failed:", e);
-        // If this was an manual click, it shouldn't really fail, but if it does, 
-        // we keep the screen visible. If it was auto, we definitely do nothing.
-        if (!isAutoStart) {
+        // If this was an manual click, it shouldn't really fail, but if it does (or if session was started but play blocked),
+        // we keep the screen visible only if session hasn't started natively.
+        if (!isAutoStart && sessionStorage.getItem('tsp_started') !== 'true') {
             alert("Please click the button to start the experience.");
         }
     });
