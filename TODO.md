@@ -9,7 +9,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [ ] **Monitor DNS:** Verify that the SSL certificate (HTTPS) finishes provisioning on Netlify.
 
 ## 🎨 Design & Branding
-- [ ] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
+- [x] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
 - [ ] **Custom Favicons:** Create unique tab icons for each subpage (`sdp`, `thanksgary`).
 - [ ] **Logo Random Redirect:** Implement the Raglan logo as a button that redirects the user to a random subproject (e.g., from `thanksgary` to `sdp`).
 

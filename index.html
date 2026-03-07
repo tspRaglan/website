@@ -29,39 +29,71 @@
             background-color: black;
         }
 
-        #start-btn {
-            padding: 20px 40px;
-            font-size: 2rem;
-            background: transparent;
-            color: white;
-            border: 4px solid white;
+        /* --- LOGO STYLING --- */
+        #logo-container {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            font-weight: bold;
-            letter-spacing: 2px;
-            transition: all 0.2s ease-in-out;
+            transition: transform 0.3s ease;
+            position: relative;
+            /* "Crop" happens by restricting container size and using object-fit */
+            overflow: hidden;
         }
 
-        #start-btn:hover {
-            background-color: white;
-            color: black;
-            transform: scale(1.05);
+        #raglan-logo {
+            width: 180%;
+            /* Increased size to "zoom in" for cropping effect */
+            height: 180%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+            animation: pulse 3s infinite ease-in-out, glowCycle 6s infinite linear;
         }
 
-        #main-shell {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: none;
+        #logo-container:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1.0);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes glowCycle {
+            0% {
+                filter: drop-shadow(0 0 15px #00f2ff);
+            }
+
+            33% {
+                filter: drop-shadow(0 0 20px #7000ff);
+            }
+
+            66% {
+                filter: drop-shadow(0 0 25px #ff00c8);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 15px #00f2ff);
+            }
         }
     </style>
 </head>
 
 <body>
     <div id="start-screen">
-        <button id="start-btn" onclick="startExperience()">click to start</button>
+        <div id="logo-container" onclick="startExperience()">
+            <img src="raglan_logo2.png" id="raglan-logo" alt="raglan logo">
+        </div>
     </div>
 
     <iframe id="main-shell" src="./tsp/sdp/index.html"></iframe>
