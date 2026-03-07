@@ -1,6 +1,6 @@
 // Base URL for external video hosting (e.g., Cloudflare R2, AWS S3)
 // Leave empty "" to use local "videos/" folder
-const BASE_VIDEO_URL = "";
+const BASE_VIDEO_URL = "https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev";
 
 const playlist = [
     { url: '5347.mp4', title: '5347' },
