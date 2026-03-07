@@ -31,9 +31,8 @@
 
         /* --- LOGO STYLING --- */
         #logo-container {
-            width: 800px;
-            /* Twice as big as previous 400px */
-            height: 800px;
+            width: 600px;
+            height: 600px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,22 +40,25 @@
             transition: transform 0.3s ease;
             position: relative;
             overflow: hidden;
-            /* Provides "crop" to the container edges */
+            /* CROP happens here */
+            background-color: black;
         }
 
         #raglan-logo {
-            width: 100%;
-            height: 100%;
+            width: 130%;
+            /* Zoomed in slightly */
+            height: 130%;
             object-fit: cover;
-            /* This "crops" the JPG square to the container */
+            object-position: top;
+            /* Pushes the 'writing' off the bottom */
             mix-blend-mode: screen;
-            /* Convert green to white: grayscale makes it gray, brightness(20) pushes it to pure white */
-            filter: grayscale(1) brightness(20);
-            animation: pulse 4s infinite ease-in-out, glowCycle 6s infinite linear;
+
+            /* Enhanced filter for visibility and color cycling */
+            animation: pulse 4s infinite ease-in-out, glowCycle 5s infinite linear;
         }
 
         #logo-container:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
         }
 
         /* --- ANIMATIONS --- */
@@ -65,29 +67,30 @@
             0%,
             100% {
                 transform: scale(1.0);
+                opacity: 0.9;
             }
 
             50% {
-                transform: scale(1.03);
-                /* Subtle pulse for large size */
+                transform: scale(1.05);
+                opacity: 1;
             }
         }
 
         @keyframes glowCycle {
             0% {
-                filter: brightness(1.2) drop-shadow(0 0 15px #00f2ff);
+                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff);
             }
 
             33% {
-                filter: brightness(1.2) drop-shadow(0 0 20px #7000ff);
+                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #7000ff) drop-shadow(0 0 20px #7000ff);
             }
 
             66% {
-                filter: brightness(1.2) drop-shadow(0 0 25px #ff00c8);
+                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #ff00c8) drop-shadow(0 0 20px #ff00c8);
             }
 
             100% {
-                filter: brightness(1.2) drop-shadow(0 0 15px #00f2ff);
+                filter: grayscale(1) brightness(5) drop-shadow(0 0 10px #00f2ff) drop-shadow(0 0 20px #00f2ff);
             }
         }
     </style>
