@@ -12,7 +12,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 
 ## 🎨 Design & Branding
 - [x] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
-- [ ] **Custom Favicons:** Create unique tab icons for each subpage (`sdp`, `thanksgary`).
+- [x] **Custom Favicons:** Create unique tab icons for each subpage (`sdp`, `thanksgary`).
 
 ## 🚀 Feature Ideas
 - [ ] **Project Katherine:** Create a new dedicated video player project for Katherine.
