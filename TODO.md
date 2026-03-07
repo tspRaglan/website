@@ -4,12 +4,10 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 
 ---
 
-## 🚀 Bandwidth & Performance
-- [ ] **URGENT: External Video Hosting:** Move high-bandwidth video files to an external service like Cloudflare R2 or AWS S3 to bypass Netlify's 100GB limit and resolve the "Site Paused" issue.
-- [ ] **Lazy Loading & Bandwidth:** Ensure videos only load when the user is about to watch them; optimize delivery to stay within limits.
-- [ ] **Recurring: Asset Compression:** Always compress new videos before uploading using the guidelines in the templates folder.
+## 🛠️ Critical Maintenance
+- [ ] **TOMORROW: Verify Live Site**: Confirm `raglan.au` is live on GitHub Pages with working SSL (HTTPS).
+- [ ] **Enforce HTTPS**: Enable the "Enforce HTTPS" toggle in GitHub Pages settings once DNS is verified.
 - [ ] **Recompile Video:** Re-encode `wefmyeyeafterward.mp4` with the correct visuals (currently uses temporary visuals from `5347.mp4`).
-- [ ] **Monitor DNS:** Verify that the SSL certificate (HTTPS) finishes provisioning on Netlify.
 
 ## 🎨 Design & Branding
 - [x] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
