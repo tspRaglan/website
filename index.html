@@ -120,62 +120,68 @@
         /* --- GLOBAL PLAYER UI (on Root Shell) --- */
         #player-shell-container {
             position: fixed;
-            bottom: 40px;
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 100;
             display: none;
             text-align: center;
             width: calc(100% - 40px);
-            max-width: 340px;
+            max-width: 800px;
             background-color: rgba(0, 0, 0, 0.4);
-            padding: 15px;
-            border-radius: 12px;
+            padding: 30px;
+            border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             transition: opacity 0.3s;
             pointer-events: auto;
         }
 
         #track-title {
             color: white;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-            font-weight: normal;
+            font-size: 2.2rem;
+            /* Increased from 0.9rem (~2.4x) */
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            font-weight: bold;
             display: block;
-            text-shadow: 1px 1px 2px black;
+            text-shadow: 2px 2px 4px black;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 220px;
-            margin: 0 auto 12px auto;
+            max-width: 100%;
+            margin: 0 auto 20px auto;
         }
 
         .controls-row {
             display: flex;
-            gap: 15px;
+            gap: 30px;
+            /* Doubled gap */
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         .ctrl-btn {
             background: transparent;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 8px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            /* Thicker border */
+            padding: 15px;
             cursor: pointer;
-            font-size: 1.2rem;
-            border-radius: 6px;
+            font-size: 3rem;
+            /* Increased from 1.2rem (2.5x) */
+            border-radius: 12px;
             transition: all 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 44px;
-            height: 44px;
+            min-width: 120px;
+            /* Increased from 44px (~2.7x) */
+            height: 120px;
+            /* Increased from 44px (~2.7x) */
         }
 
         .ctrl-btn:hover {
@@ -205,26 +211,56 @@
 
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            height: 6px;
+            height: 12px;
+            /* Doubled */
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 6px;
         }
 
         input[type=range]::-webkit-slider-thumb {
-            height: 16px;
-            width: 16px;
+            height: 48px;
+            /* Tripled from 16px */
+            width: 48px;
+            /* Tripled from 16px */
             border-radius: 50%;
             background: #ffffff;
             -webkit-appearance: none;
-            margin-top: -5px;
+            margin-top: -18px;
+            /* Adjusted for larger track/thumb */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         @media (max-width: 600px) {
             #player-shell-container {
-                bottom: 25px;
-                width: calc(100% - 40px);
-                max-width: 340px;
-                padding: 12px;
+                bottom: 30px;
+                width: calc(100% - 10px);
+                max-width: none;
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .ctrl-btn {
+                min-width: 80px;
+                /* Scaled down slightly for mobile fit */
+                height: 80px;
+                font-size: 2rem;
+                border-radius: 10px;
+            }
+
+            .controls-row {
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            #track-title {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            input[type=range]::-webkit-slider-thumb {
+                height: 40px;
+                width: 40px;
+                margin-top: -14px;
             }
         }
     </style>
