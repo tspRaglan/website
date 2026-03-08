@@ -188,11 +188,13 @@
         /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 600px) {
             #player-container {
-                bottom: 20px;
-                right: 15px;
-                left: 15px;
-                min-width: unset;
-                width: auto;
+                bottom: 25px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                min-width: 280px;
+                width: calc(100% - 40px);
+                max-width: 340px;
                 padding: 12px;
             }
 
