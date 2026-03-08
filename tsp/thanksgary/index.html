@@ -184,6 +184,37 @@
             background: #ffffff;
             cursor: pointer;
         }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 600px) {
+            #player-container {
+                bottom: 20px;
+                right: 15px;
+                left: 15px;
+                min-width: unset;
+                width: auto;
+                padding: 12px;
+            }
+
+            #track-title {
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .controls-row {
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .ctrl-btn {
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+
+            .volume-container input[type=range] {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
