@@ -64,10 +64,41 @@ function autoStartAttempt() {
     }
 }
 
-// Listen for explicit start command from parent iframe shell
+// Global state sync to parent
+function syncStateToParent() {
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'tsp_state_update',
+            isPlaying: isPlaying,
+            isRandom: isRandom
+        }, '*');
+    }
+}
+
+// Listen for explicit commands from parent iframe shell
 window.addEventListener('message', (event) => {
-    if (event.data.type === 'tsp_start_playback') {
-        startExperience(false);
+    const data = event.data;
+    if (data.type === 'tsp_command') {
+        switch (data.command) {
+            case 'start':
+                startExperience(false);
+                break;
+            case 'toggle_play':
+                togglePlayPause();
+                break;
+            case 'next':
+                if (!isTransitioning) jumpToVideo(getNextIndex());
+                break;
+            case 'prev':
+                if (!isTransitioning) jumpToVideo(getPrevIndex());
+                break;
+            case 'set_volume':
+                setVolume(data.value);
+                break;
+            case 'toggle_random':
+                toggleRandom();
+                break;
+        }
     }
 });
 
@@ -110,9 +141,8 @@ function playVideo(player, isAutoStart = false) {
         // Success! Hide overlays
         sessionStorage.setItem('tsp_started', 'true');
         startScreen.style.display = 'none';
-        playerContainer.style.display = 'block';
         isPlaying = true;
-        playPauseBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+        syncStateToParent();
 
         if (window.parent !== window) {
             window.parent.postMessage({ type: 'tsp_autoplay_success' }, '*');
@@ -120,7 +150,7 @@ function playVideo(player, isAutoStart = false) {
     }).catch(e => {
         console.error("Autoplay prevented:", e);
         isPlaying = false;
-        playPauseBtn.innerHTML = '&#9654;'; // Play icon
+        syncStateToParent();
         if (!isAutoStart && sessionStorage.getItem('tsp_started') !== 'true') {
             alert("Please click the button to start the experience.");
         }
@@ -128,7 +158,13 @@ function playVideo(player, isAutoStart = false) {
 }
 
 function updateTitle() {
-    trackTitle.innerText = playlist[currentIndex].title;
+    const title = playlist[currentIndex].title;
+    if (trackTitle) trackTitle.innerText = title;
+
+    // Notify parent shell
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'tsp_track_update', title: title }, '*');
+    }
 }
 
 function getNextIndex() {
@@ -245,7 +281,7 @@ function togglePlayPause() {
     if (isPlaying) {
         activePlayer.pause();
         isPlaying = false;
-        playPauseBtn.innerHTML = '&#9654;';
+        syncStateToParent();
     } else {
         playVideo(activePlayer);
     }
@@ -253,11 +289,7 @@ function togglePlayPause() {
 
 function toggleRandom() {
     isRandom = !isRandom;
-    if (isRandom) {
-        randomBtn.classList.add('active-random');
-    } else {
-        randomBtn.classList.remove('active-random');
-    }
+    syncStateToParent();
     // Update the preload to match the new mode
     preloadNext();
 }

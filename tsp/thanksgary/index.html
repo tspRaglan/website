@@ -69,8 +69,8 @@
             bottom: 30px;
             right: 30px;
             z-index: 10;
-            display: none;
-            /* Hidden until start */
+            display: none !important;
+            /* Hidden, handled by shell player */
 
             text-align: center;
             min-width: 240px;
@@ -292,11 +292,42 @@
             }
         }
 
-        // Listen for explicit start command from parent iframe shell
+        // Global state sync to parent
+        function syncStateToParent() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'tsp_state_update',
+                    isPlaying: isPlaying,
+                    isRandom: isRandom
+                }, '*');
+            }
+        }
+
+        // Listen for explicit commands from parent iframe shell
         window.addEventListener('message', (event) => {
-            if (event.data.type === 'tsp_start_playback') {
-                console.log("Received start command from root shell.");
-                startExperience(false);
+            const data = event.data;
+            if (data.type === 'tsp_command') {
+                console.log("Received command from shell:", data.command);
+                switch (data.command) {
+                    case 'start':
+                        startExperience(false);
+                        break;
+                    case 'toggle_play':
+                        toggleAudio();
+                        break;
+                    case 'next':
+                        playNext();
+                        break;
+                    case 'prev':
+                        playPrev();
+                        break;
+                    case 'set_volume':
+                        setVolume(data.value);
+                        break;
+                    case 'toggle_random':
+                        toggleRandom();
+                        break;
+                }
             }
         });
 
@@ -314,7 +345,12 @@
             }
             const assetUrl = getAssetUrl(playlist[index].file, 'audio');
             audioPlayer.src = assetUrl;
-            document.getElementById('track-title').innerText = playlist[index].title;
+
+            // Notify parent shell
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'tsp_track_update', title: playlist[index].title }, '*');
+            }
+
             playedTracks.add(index);
         }
 
@@ -372,23 +408,18 @@
             if (audioPlayer.paused) {
                 audioPlayer.play().then(() => {
                     isPlaying = true;
-                    btn.innerHTML = "&#10074;&#10074;";
+                    syncStateToParent();
                 }).catch(e => console.log("Play failed", e));
             } else {
                 audioPlayer.pause();
                 isPlaying = false;
-                btn.innerHTML = "&#9654;";
+                syncStateToParent();
             }
         }
 
         function toggleRandom() {
             isRandom = !isRandom;
-            const btn = document.getElementById('random-btn');
-            if (isRandom) {
-                btn.classList.add('active-random');
-            } else {
-                btn.classList.remove('active-random');
-            }
+            syncStateToParent();
         }
 
         function setVolume(val) {
@@ -433,7 +464,7 @@
                 }
 
                 isPlaying = true;
-                document.getElementById('play-pause-btn').innerHTML = "&#10074;&#10074;";
+                syncStateToParent();
 
                 // Notify parent
                 if (window.parent !== window) {

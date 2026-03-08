@@ -66,11 +66,42 @@ function autoStartAttempt() {
     }
 }
 
-// Listen for explicit start command from parent iframe shell
+// Global state sync to parent
+function syncStateToParent() {
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'tsp_state_update',
+            isPlaying: isPlaying,
+            isRandom: isRandom
+        }, '*');
+    }
+}
+
+// Listen for explicit commands from parent iframe shell
 window.addEventListener('message', (event) => {
-    if (event.data.type === 'tsp_start_playback') {
-        console.log("Received start command from root shell.");
-        startExperience(false);
+    const data = event.data;
+    if (data.type === 'tsp_command') {
+        console.log("Received command from shell:", data.command);
+        switch (data.command) {
+            case 'start':
+                startExperience(false);
+                break;
+            case 'toggle_play':
+                togglePlayPause();
+                break;
+            case 'next':
+                if (!isTransitioning) jumpToVideo(getNextIndex());
+                break;
+            case 'prev':
+                if (!isTransitioning) jumpToVideo(getPrevIndex());
+                break;
+            case 'set_volume':
+                setVolume(data.value);
+                break;
+            case 'toggle_random':
+                toggleRandom();
+                break;
+        }
     }
 });
 
@@ -109,9 +140,9 @@ function startExperience(isAutoStart = false) {
         startScreen.style.display = 'none';
         playerContainer.style.display = 'block';
         isPlaying = true;
-        playPauseBtn.innerHTML = '&#10074;&#10074;';
         updateTitle();
         preloadNext();
+        syncStateToParent();
 
         // Notify parent that we successfully bypassed the start button
         if (window.parent !== window) {
@@ -128,7 +159,13 @@ function startExperience(isAutoStart = false) {
 }
 
 function updateTitle() {
-    trackTitle.innerText = playlist[currentIndex].title;
+    const title = playlist[currentIndex].title;
+    if (trackTitle) trackTitle.innerText = title;
+
+    // Notify parent shell
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'tsp_track_update', title: title }, '*');
+    }
 }
 
 function getNextIndex() {
@@ -243,11 +280,11 @@ function jumpToVideo(index) {
 function playVideo(player) {
     player.play().then(() => {
         isPlaying = true;
-        playPauseBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+        syncStateToParent();
     }).catch(e => {
         console.error("Autoplay prevented:", e);
         isPlaying = false;
-        playPauseBtn.innerHTML = '&#9654;'; // Play icon
+        syncStateToParent();
     });
 }
 
@@ -255,7 +292,7 @@ function togglePlayPause() {
     if (isPlaying) {
         activePlayer.pause();
         isPlaying = false;
-        playPauseBtn.innerHTML = '&#9654;';
+        syncStateToParent();
     } else {
         playVideo(activePlayer);
     }
@@ -263,11 +300,7 @@ function togglePlayPause() {
 
 function toggleRandom() {
     isRandom = !isRandom;
-    if (isRandom) {
-        randomBtn.classList.add('active-random');
-    } else {
-        randomBtn.classList.remove('active-random');
-    }
+    syncStateToParent();
     // Update the preload to match the new mode
     preloadNext();
 }

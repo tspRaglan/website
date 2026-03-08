@@ -113,6 +113,117 @@
             border: none;
             z-index: 10;
         }
+
+        /* --- GLOBAL PLAYER UI (on Root Shell) --- */
+        #player-shell-container {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            /* Above everything */
+            display: none;
+            /* Hidden until start */
+            text-align: center;
+            min-width: 280px;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s;
+            pointer-events: auto;
+        }
+
+        #track-title {
+            color: white;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            font-weight: normal;
+            display: block;
+            text-shadow: 1px 1px 2px black;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 220px;
+            margin: 0 auto 12px auto;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .ctrl-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 44px;
+            height: 44px;
+        }
+
+        .ctrl-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
+
+        .ctrl-btn.active-random {
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            border-color: black;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            -webkit-appearance: none;
+            margin-top: -5px;
+        }
+
+        @media (max-width: 600px) {
+            #player-shell-container {
+                bottom: 25px;
+                width: calc(100% - 40px);
+                max-width: 340px;
+                padding: 12px;
+            }
+        }
     </style>
 </head>
 
@@ -125,30 +236,63 @@
 
     <iframe id="main-shell" src="tsp/sdp/index.html" allow="autoplay; fullscreen"></iframe>
 
+    <div id="player-shell-container">
+        <span id="track-title">loading...</span>
+        <div class="controls-row">
+            <button class="ctrl-btn" onclick="sendCommand('prev')">&#9664;</button>
+            <button class="ctrl-btn" id="play-pause-btn" onclick="sendCommand('toggle_play')">&#10074;&#10074;</button>
+            <button class="ctrl-btn" onclick="sendCommand('next')">&#9654;</button>
+            <button class="ctrl-btn" id="random-btn" onclick="sendCommand('toggle_random')">⤨</button>
+        </div>
+        <div class="volume-container">
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5"
+                oninput="sendCommand('set_volume', this.value)">
+        </div>
+    </div>
+
     <script>
+        const iframe = document.getElementById('main-shell');
+        const playerUI = document.getElementById('player-shell-container');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const randomBtn = document.getElementById('random-btn');
+        const trackTitle = document.getElementById('track-title');
+
         // Clear session on page load so a browser refresh always acts as a "Reset to Home"
         sessionStorage.removeItem('tsp_started');
+
+        function sendCommand(type, value = null) {
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'tsp_command', command: type, value: value }, '*');
+            }
+        }
 
         function startExperience() {
             sessionStorage.setItem('tsp_started', 'true');
             showExperience();
-
-            // Tell the iframe to start playback since the user just clicked
-            const iframe = document.getElementById('main-shell');
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ type: 'tsp_start_playback' }, '*');
-            }
+            sendCommand('start');
         }
 
         function showExperience() {
             document.getElementById('start-screen').style.display = 'none';
+            playerUI.style.display = 'block';
         }
 
-        // Listen for internal "autoplay success" from subprojects
+        // Listen for updates from subprojects
         window.addEventListener('message', (event) => {
-            if (event.data.type === 'tsp_autoplay_success') {
-                console.log("Subproject successfully autoplays. Bypassing root overlay.");
+            const data = event.data;
+            if (data.type === 'tsp_autoplay_success') {
                 showExperience();
+            }
+            if (data.type === 'tsp_track_update') {
+                trackTitle.innerText = data.title;
+            }
+            if (data.type === 'tsp_state_update') {
+                playPauseBtn.innerHTML = data.isPlaying ? '&#10074;&#10074;' : '&#9654;';
+                if (data.isRandom) {
+                    randomBtn.classList.add('active-random');
+                } else {
+                    randomBtn.classList.remove('active-random');
+                }
             }
         });
 
