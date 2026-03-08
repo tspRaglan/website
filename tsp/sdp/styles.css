@@ -199,3 +199,37 @@ input[type=range]::-moz-range-thumb {
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 600px) {
+    #player-container {
+        bottom: 20px;
+        right: 15px;
+        left: 15px;
+        min-width: unset;
+        width: auto;
+        padding: 12px;
+    }
+
+    #track-title {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        max-width: 100%;
+    }
+
+    .controls-row {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .ctrl-btn {
+        padding: 6px;
+        font-size: 1rem;
+        min-width: 36px;
+        height: 36px;
+    }
+
+    .volume-container {
+        padding: 0 5px;
+    }
+}
