@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sdp - video player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="video-layer">
+        <video id="video-a" class="bg-video active" playsinline></video>
+        <video id="video-b" class="bg-video" playsinline></video>
+    </div>
+
+    <div id="start-screen">
+        <button id="start-btn">click to start</button>
+    </div>
+
+    <div id="player-container">
+        <span id="track-title">loading...</span>
+
+        <div class="controls-row">
+            <button class="ctrl-btn" id="prev-btn" title="previous">&#9664;</button>
+            <button class="ctrl-btn" id="play-pause-btn" title="play/pause">&#10074;&#10074;</button>
+            <button class="ctrl-btn" id="next-btn" title="next">&#9654;</button>
+            <button class="ctrl-btn" id="random-btn" title="toggle random">⤨</button>
+        </div>
+
+        <div class="volume-container">
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

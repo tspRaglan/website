@@ -1,0 +1,5 @@
+# Ignore macOS dotfiles
+.DS_Store
+
+# Ignore specific large files if they are ever added back
+# thanksGary_original.mp4
