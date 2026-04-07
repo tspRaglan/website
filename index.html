@@ -294,7 +294,17 @@
         function startExperience() {
             sessionStorage.setItem('tsp_started', 'true');
             showExperience();
-            sendCommand('start');
+            // Direct call propagates user gesture to iframe (same-origin).
+            // postMessage alone doesn't count as a user gesture so play() gets blocked.
+            try {
+                if (iframe.contentWindow && iframe.contentWindow.startExperience) {
+                    iframe.contentWindow.startExperience(false);
+                } else {
+                    sendCommand('start');
+                }
+            } catch(e) {
+                sendCommand('start'); // cross-origin fallback
+            }
         }
 
         function showExperience() {
