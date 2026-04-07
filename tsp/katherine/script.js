@@ -33,7 +33,6 @@ const videoA = document.getElementById('video-a');
 const videoB = document.getElementById('video-b');
 const startScreen = document.getElementById('start-screen');
 const playerContainer = document.getElementById('player-container');
-const startBtn = document.getElementById('start-btn');
 const playPauseBtn = document.getElementById('play-pause-btn');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
@@ -91,7 +90,6 @@ window.addEventListener('message', (event) => {
 });
 
 // Button event listeners
-startBtn.addEventListener('click', startExperience);
 playPauseBtn.addEventListener('click', togglePlayPause);
 prevBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getPrevIndex()); });
 nextBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getNextIndex()); });
