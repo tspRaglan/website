@@ -9,7 +9,7 @@ const playlist = [
     { url: 'aqeuous.mp4',      title: 'aqeuous' },
     { url: 'katherine.mp4',    title: 'katherine' },
     { url: 'marymelody.mp4',   title: 'mary melody' },
-    { url: 'spirittheair.mp4', title: 'spirit the air' },
+    { url: 'spirittheair.mp4', title: 'spirit the air', startTime: 132 },
 ];
 
 function getVideoUrl(filename) {
@@ -109,6 +109,8 @@ function startExperience(isAutoStart = false) {
 
     playedTracks.add(currentIndex);
     activePlayer.src = getVideoUrl(playlist[currentIndex].url);
+    const st = playlist[currentIndex].startTime || 0;
+    if (st) activePlayer.currentTime = st;
     activePlayer.muted = false;
     inactivePlayer.muted = false;
 
@@ -207,6 +209,8 @@ function jumpToVideo(index) {
     inactivePlayer = prevPlayer;
 
     playVideo(activePlayer);
+    const st = playlist[currentIndex].startTime || 0;
+    if (st) activePlayer.currentTime = st;
     updateTitle();
 
     activePlayer.classList.add('active');
