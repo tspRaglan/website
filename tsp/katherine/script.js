@@ -4,12 +4,12 @@ const BASE_VIDEO_URL = "https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev";
 
 // --- PLAYLIST ---
 const playlist = [
-    { url: 'compressed/@peace.mp4',       title: '@peace' },
-    { url: 'compressed/aqeuous.mp4',       title: 'aqeuous' },
-    { url: 'compressed/continue.mp4',      title: 'continue' },
-    { url: 'compressed/katherine.mp4',     title: 'katherine' },
-    { url: 'compressed/marymelody.mp4',    title: 'mary melody' },
-    { url: 'compressed/spirittheair.mp4',  title: 'spirit the air' },
+    { url: '@peace.mp4',       title: '@peace' },
+    { url: 'aqeuous.mp4',      title: 'aqeuous' },
+    { url: 'continue.mp4',     title: 'continue' },
+    { url: 'katherine.mp4',    title: 'katherine' },
+    { url: 'marymelody.mp4',   title: 'mary melody' },
+    { url: 'spirittheair.mp4', title: 'spirit the air' },
 ];
 
 function getVideoUrl(filename) {
@@ -133,9 +133,9 @@ function startExperience(isAutoStart = false) {
         }
     }).catch(e => {
         console.warn("Autoplay attempt failed:", e);
-        if (!isAutoStart && sessionStorage.getItem('tsp_started') !== 'true') {
-            alert("Please click the button to start the experience.");
-        }
+        // Show start screen gracefully — no alert
+        startScreen.style.display = 'flex';
+        playerContainer.style.display = 'none';
     });
 }
 
