@@ -4,7 +4,7 @@ const BASE_VIDEO_URL = "https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev";
 
 // --- PLAYLIST ---
 const playlist = [
-    { url: '@peace.mp4',       title: '@peace' },
+    { url: 'peace.mp4',        title: '@peace' },
     { url: 'aqeuous.mp4',      title: 'aqeuous' },
     { url: 'continue.mp4',     title: 'continue' },
     { url: 'katherine.mp4',    title: 'katherine' },
