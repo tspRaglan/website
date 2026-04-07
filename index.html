@@ -17,93 +17,6 @@
             font-family: 'Courier New', Courier, monospace;
         }
 
-        #start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-            /* Above Player */
-            background-color: black;
-            overflow: hidden;
-        }
-
-        /* --- LOGO STYLING --- */
-        #logo-container {
-            width: 1000px;
-            /* Even bigger as requested */
-            height: 1000px;
-            max-width: 90vw;
-            /* Responsive scaling for smaller screens */
-            max-height: 90vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            position: relative;
-            /* allows the glow to spread out */
-        }
-
-        #raglan-logo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-
-            /* CROP: Hide the bottom part where the text is */
-            clip-path: inset(0 0 12% 0);
-
-            /*
-               COLOR MAGIC:
-               1. sepia(1) turns white/gray into a yellowish base.
-               2. saturate(10) makes it intense.
-               3. hue-rotate(Xdeg) then cycles through the whole rainbow.
-            */
-            animation: pulse 4s infinite ease-in-out, glowCycle 8s infinite linear;
-        }
-
-        #logo-container:hover {
-            transform: scale(1.05);
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1.0);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        @keyframes glowCycle {
-            0% {
-                filter: sepia(1) saturate(20) hue-rotate(0deg) drop-shadow(0 0 15px currentColor);
-                color: #00f2ff;
-            }
-
-            33% {
-                filter: sepia(1) saturate(20) hue-rotate(90deg) drop-shadow(0 0 20px currentColor);
-                color: #7000ff;
-            }
-
-            66% {
-                filter: sepia(1) saturate(20) hue-rotate(240deg) drop-shadow(0 0 25px currentColor);
-                color: #ff00c8;
-            }
-
-            100% {
-                filter: sepia(1) saturate(20) hue-rotate(360deg) drop-shadow(0 0 15px currentColor);
-                color: #00f2ff;
-            }
-        }
 
         /* --- IFRAME SHELL --- */
         #main-shell {
@@ -253,11 +166,7 @@
 </head>
 
 <body>
-    <div id="start-screen">
-        <div id="logo-container" onclick="startExperience()">
-            <img src="Raglan Logo.png" id="raglan-logo" alt="raglan logo">
-        </div>
-    </div>
+    <!-- start screen is handled inside the active subproject iframe -->
 
     <iframe id="main-shell" src="tsp/katherine/index.html" allow="autoplay; fullscreen"></iframe>
 
@@ -291,24 +200,8 @@
             }
         }
 
-        function startExperience() {
-            sessionStorage.setItem('tsp_started', 'true');
-            showExperience();
-            // Direct call propagates user gesture to iframe (same-origin).
-            // postMessage alone doesn't count as a user gesture so play() gets blocked.
-            try {
-                if (iframe.contentWindow && iframe.contentWindow.startExperience) {
-                    iframe.contentWindow.startExperience(false);
-                } else {
-                    sendCommand('start');
-                }
-            } catch(e) {
-                sendCommand('start'); // cross-origin fallback
-            }
-        }
 
         function showExperience() {
-            document.getElementById('start-screen').style.display = 'none';
             playerUI.style.display = 'block';
         }
 
@@ -331,7 +224,6 @@
             }
         });
 
-        // Always show the shell container but use the start-screen as a literal overlay
         document.getElementById('main-shell').style.display = 'block';
     </script>
 </body>
