@@ -1,6 +1,6 @@
 // Base URL for external video hosting (e.g., Cloudflare R2)
 // Leave empty "" to use local "videos/" folder
-const BASE_VIDEO_URL = "";
+const BASE_VIDEO_URL = "https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev";
 
 // --- PLAYLIST ---
 const playlist = [
