@@ -130,7 +130,7 @@ Output files land in `videos/compressed/` — **do not delete the originals (R f
   - `tsp_state_update` → shell syncs play/pause & random button state
   - `tsp_command` → shell sends play/pause/next/prev/volume to subproject
 - **sessionStorage**: `tsp_started` flag prevents re-showing the splash on navigation between subprojects.
-- **Cloudflare R2**: When assets are too large for GitHub, set `BASE_VIDEO_URL` in `script.js` to the R2 bucket URL.
+- **Cloudflare R2**: **All media files (`.mp4`, `.mp3`, `.wav`) must be uploaded to R2** — do not rely on GitHub Pages to serve them. Set `BASE_VIDEO_URL` in each subproject's script to `https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev`. Upload with: `rclone copyto <file> r2:raglan-videos/<filename> --ignore-times --progress`
 
 ---
 
