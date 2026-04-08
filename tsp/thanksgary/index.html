@@ -443,6 +443,7 @@
 
         // --- 4. CONTROL FUNCTIONS ---
         function playNext() {
+            if (sessionStorage.getItem('tsp_ultra_random') === 'true') { triggerRedirect(); return; }
             const nextIdx = getNextIndex();
             if (nextIdx === -1) {
                 triggerRedirect();

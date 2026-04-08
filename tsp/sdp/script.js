@@ -223,11 +223,9 @@ function preloadNext() {
 
 function onVideoEnded() {
     if (!isTransitioning) {
+        if (sessionStorage.getItem('tsp_ultra_random') === 'true') { triggerRedirect(); return; }
         const nextIdx = getNextIndex();
-        if (nextIdx === -1) {
-            triggerRedirect();
-            return;
-        }
+        if (nextIdx === -1) { triggerRedirect(); return; }
         jumpToVideo(nextIdx);
     }
 }
