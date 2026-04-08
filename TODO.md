@@ -18,7 +18,8 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [x] **Refresh / Home Link:** Fix the "refresh icon" so that it properly relinks back to the main index page.
 - [ ] **Dynamic Templates:** Modify the `video-player-template` to accept a JSON playlist file instead of hardcoded HTML.
 - [ ] **Mobile Touch Optimization:** Ensure the volume slider and buttons are easy to use on smaller touch screens (Note: Player controls are currently not visible on mobile devices).
-- [ ] **Random Raglan Man:** "The random raglan man everywhere" (Details to be explained later).
+- [ ] **Random Raglan Man:** "The random raglan man everywhere" (Details to be explained later)
+- [ ] **Ultra Random Mode:** Logo-related feature — details to be explained. Attach to logo work..
 - [x] **URL Masking:** Research/implement a way to keep the address bar showing `raglan.au` even when navigating subprojects.
 - [x] **Bypass Click-to-Start:** Refactor the start logic to either remove or automate the "click to start" overlay where browser policies allow.
 - [ ] **Mobile Compatibility:** Conduct thorough testing across various mobile devices and browsers.

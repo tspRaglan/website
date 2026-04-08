@@ -1,5 +1,9 @@
 # Ignore macOS dotfiles
 .DS_Store
 
-# Ignore large raw video files (upload to Cloudflare R2 instead)
-tsp/katherine/videos/
+# Media files — all hosted on Cloudflare R2, never commit to GitHub
+*.mp4
+*.mp3
+*.wav
+*.mov
+*.avi

@@ -25,7 +25,7 @@ let isTransitioning = false;
 let playedTracks = new Set();
 
 const CURRENT_PROJECT = 'sdp';
-const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary'];
+const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary', 'emom-mar26'];
 
 // DOM Elements
 const videoA = document.getElementById('video-a');
