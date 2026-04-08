@@ -95,9 +95,38 @@
         }
 
         .ctrl-btn.active-random {
-            background: rgba(255, 255, 255, 0.9);
-            color: black;
-            border-color: black;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        #random-logo {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            animation: logoPulse 4s infinite ease-in-out, logoGlow 8s infinite linear;
+        }
+
+        .active-random #random-logo {
+            animation: logoPulse 2s infinite ease-in-out, logoGlowFast 3s infinite linear;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1.0); }
+            50%       { transform: scale(1.12); }
+        }
+
+        @keyframes logoGlow {
+            0%   { filter: sepia(1) saturate(20) hue-rotate(0deg)   drop-shadow(0 0 4px currentColor); color: #00f2ff; }
+            33%  { filter: sepia(1) saturate(20) hue-rotate(90deg)  drop-shadow(0 0 6px currentColor); color: #7000ff; }
+            66%  { filter: sepia(1) saturate(20) hue-rotate(240deg) drop-shadow(0 0 8px currentColor); color: #ff00c8; }
+            100% { filter: sepia(1) saturate(20) hue-rotate(360deg) drop-shadow(0 0 4px currentColor); color: #00f2ff; }
+        }
+
+        @keyframes logoGlowFast {
+            0%   { filter: sepia(1) saturate(30) hue-rotate(0deg)   drop-shadow(0 0 8px currentColor);  color: #00f2ff; }
+            33%  { filter: sepia(1) saturate(30) hue-rotate(90deg)  drop-shadow(0 0 12px currentColor); color: #7000ff; }
+            66%  { filter: sepia(1) saturate(30) hue-rotate(240deg) drop-shadow(0 0 16px currentColor); color: #ff00c8; }
+            100% { filter: sepia(1) saturate(30) hue-rotate(360deg) drop-shadow(0 0 8px currentColor);  color: #00f2ff; }
         }
 
         .volume-container {
@@ -176,7 +205,9 @@
             <button class="ctrl-btn" onclick="sendCommand('prev')" title="previous">&#9198;</button>
             <button class="ctrl-btn" id="play-pause-btn" onclick="sendCommand('toggle_play')" title="play/pause">&#9654;</button>
             <button class="ctrl-btn" onclick="sendCommand('next')" title="next">&#9197;</button>
-            <button class="ctrl-btn" id="random-btn" onclick="sendCommand('toggle_random')" title="shuffle">&#10227;</button>
+            <button class="ctrl-btn" id="random-btn" onclick="sendCommand('toggle_random')" title="shuffle">
+                <img src="tsp/katherine/assets/RaglanLogoTransparentWhite.png" id="random-logo" alt="shuffle">
+            </button>
         </div>
         <div class="volume-container">
             <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5"
