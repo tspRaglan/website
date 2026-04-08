@@ -2,6 +2,10 @@
 
 This document stores the essential settings for the website's hosting, domain, and version control.
 
+> ⚠️ **HOSTING: GitHub Pages — NOT Netlify.**
+> The Netlify site (`tspraglan.netlify.app`) has been deleted. Do not reconnect it.
+> All deployments go via GitHub push to `master` → GitHub Pages auto-deploys.
+
 ---
 
 ## 📂 Project Info
