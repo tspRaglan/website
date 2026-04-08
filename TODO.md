@@ -32,5 +32,8 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 ## 🛠️ Optimization (Future)
 - [ ] **Reduce Large File Sizes**: Compress videos and audio files to reduce repository size and improve loading times (detected several files >50MB).
 
+## 🎵 Upcoming Projects
+- [ ] **Add Mom Project:** Create a new `tsp/mom/` subproject and add it to the project cycling rotation.
+
 ---
 _Add new ideas below:_
