@@ -271,6 +271,11 @@
     </div>
 
     <script>
+        // Hide start screen immediately if session already active (coming from another project)
+        if (sessionStorage.getItem('tsp_started') === 'true') {
+            document.getElementById('start-screen').style.display = 'none';
+        }
+
         // --- 1. PLAYLIST & CONFIG ---
         // Base URL for external hosting (e.g., Cloudflare R2, AWS S3)
         // Leave empty "" to use local folders
