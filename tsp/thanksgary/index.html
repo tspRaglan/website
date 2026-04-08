@@ -250,6 +250,10 @@
         <source src="thanksGary.mp4" type="video/mp4">
     </video>
 
+    <div id="loading-screen" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);display:none;justify-content:center;align-items:center;z-index:15;pointer-events:none;">
+        <img src="../katherine/assets/RaglanLogoTransparentWhite.png" id="loading-logo" style="width:220px;height:220px;object-fit:contain;animation:pulse 4s infinite ease-in-out,glowCycle 8s infinite linear;" alt="loading">
+    </div>
+
     <div id="start-screen">
         <button id="start-btn" onclick="startExperience()">click to start</button>
     </div>
@@ -516,6 +520,15 @@
         }
 
         audioPlayer.addEventListener('ended', playNext);
+
+        // Loading screen
+        const loadingScreen = document.getElementById('loading-screen');
+        function showLoading() { if (loadingScreen && isPlaying) loadingScreen.style.display = 'flex'; }
+        function hideLoading() { if (loadingScreen) loadingScreen.style.display = 'none'; }
+        audioPlayer.addEventListener('waiting', showLoading);
+        audioPlayer.addEventListener('stalled', showLoading);
+        audioPlayer.addEventListener('playing', hideLoading);
+        audioPlayer.addEventListener('canplay', hideLoading);
     </script>
 </body>
 

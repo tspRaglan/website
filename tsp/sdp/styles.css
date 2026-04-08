@@ -35,6 +35,40 @@ html {
     z-index: 1;
 }
 
+/* --- LOADING SCREEN --- */
+#loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 15;
+    pointer-events: none;
+}
+
+#loading-logo {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    animation: pulse 4s infinite ease-in-out, glowCycle 8s infinite linear;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1.0); }
+    50%       { transform: scale(1.05); }
+}
+
+@keyframes glowCycle {
+    0%   { filter: sepia(1) saturate(20) hue-rotate(0deg)   drop-shadow(0 0 15px currentColor); color: #00f2ff; }
+    33%  { filter: sepia(1) saturate(20) hue-rotate(90deg)  drop-shadow(0 0 20px currentColor); color: #7000ff; }
+    66%  { filter: sepia(1) saturate(20) hue-rotate(240deg) drop-shadow(0 0 25px currentColor); color: #ff00c8; }
+    100% { filter: sepia(1) saturate(20) hue-rotate(360deg) drop-shadow(0 0 15px currentColor); color: #00f2ff; }
+}
+
 /* --- START SCREEN --- */
 #start-screen {
     position: absolute;

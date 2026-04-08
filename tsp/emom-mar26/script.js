@@ -217,6 +217,19 @@ function setVolume(val) {
     videoB.volume = currentVolume;
 }
 
+// Loading screen
+const loadingScreen = document.getElementById('loading-screen');
+function showLoading() { if (loadingScreen && isPlaying) loadingScreen.style.display = 'flex'; }
+function hideLoading() { if (loadingScreen) loadingScreen.style.display = 'none'; }
+videoA.addEventListener('waiting', showLoading);
+videoB.addEventListener('waiting', showLoading);
+videoA.addEventListener('stalled', showLoading);
+videoB.addEventListener('stalled', showLoading);
+videoA.addEventListener('playing', hideLoading);
+videoB.addEventListener('playing', hideLoading);
+videoA.addEventListener('canplay', hideLoading);
+videoB.addEventListener('canplay', hideLoading);
+
 videoA.addEventListener('error', handleVideoError);
 videoB.addEventListener('error', handleVideoError);
 
