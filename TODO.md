@@ -35,6 +35,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 
 ## 🎵 Upcoming Projects
 - [ ] **Add Mom Project:** Create a new `tsp/mom/` subproject and add it to the project cycling rotation.
+- [x] **emom-mar26:** Added. Single video, cycles with all other projects. Video on R2.
 
 ---
 _Add new ideas below:_
