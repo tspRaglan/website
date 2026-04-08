@@ -95,19 +95,25 @@
         }
 
         .ctrl-btn.active-random {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.9);
+            color: black;
+            border-color: black;
         }
 
-        #random-logo {
+        #ultra-random-logo {
             width: 26px;
             height: 26px;
             object-fit: contain;
             animation: logoPulse 4s infinite ease-in-out, logoGlow 8s infinite linear;
         }
 
-        .active-random #random-logo {
-            animation: logoPulse 2s infinite ease-in-out, logoGlowFast 3s infinite linear;
+        #ultra-random-btn.ultra-active {
+            background: transparent;
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        #ultra-random-btn.ultra-active #ultra-random-logo {
+            animation: logoPulse 1.5s infinite ease-in-out, logoGlowFast 3s infinite linear;
         }
 
         @keyframes logoPulse {
@@ -123,10 +129,10 @@
         }
 
         @keyframes logoGlowFast {
-            0%   { filter: sepia(1) saturate(30) hue-rotate(0deg)   drop-shadow(0 0 8px currentColor);  color: #00f2ff; }
-            33%  { filter: sepia(1) saturate(30) hue-rotate(90deg)  drop-shadow(0 0 12px currentColor); color: #7000ff; }
-            66%  { filter: sepia(1) saturate(30) hue-rotate(240deg) drop-shadow(0 0 16px currentColor); color: #ff00c8; }
-            100% { filter: sepia(1) saturate(30) hue-rotate(360deg) drop-shadow(0 0 8px currentColor);  color: #00f2ff; }
+            0%   { filter: sepia(1) saturate(30) hue-rotate(0deg)   drop-shadow(0 0 10px currentColor); color: #00f2ff; }
+            33%  { filter: sepia(1) saturate(30) hue-rotate(90deg)  drop-shadow(0 0 16px currentColor); color: #7000ff; }
+            66%  { filter: sepia(1) saturate(30) hue-rotate(240deg) drop-shadow(0 0 20px currentColor); color: #ff00c8; }
+            100% { filter: sepia(1) saturate(30) hue-rotate(360deg) drop-shadow(0 0 10px currentColor); color: #00f2ff; }
         }
 
         .volume-container {
@@ -202,12 +208,13 @@
     <div id="player-shell-container">
         <span id="track-title">loading...</span>
         <div class="controls-row">
+            <button class="ctrl-btn" id="ultra-random-btn" onclick="toggleUltraRandom()" title="ultra random">
+                <img src="tsp/katherine/assets/RaglanLogoTransparentWhite.png" id="ultra-random-logo" alt="ultra random">
+            </button>
             <button class="ctrl-btn" onclick="sendCommand('prev')" title="previous">&#9198;</button>
             <button class="ctrl-btn" id="play-pause-btn" onclick="sendCommand('toggle_play')" title="play/pause">&#9654;</button>
             <button class="ctrl-btn" onclick="sendCommand('next')" title="next">&#9197;</button>
-            <button class="ctrl-btn" id="random-btn" onclick="sendCommand('toggle_random')" title="shuffle">
-                <img src="tsp/katherine/assets/RaglanLogoTransparentWhite.png" id="random-logo" alt="shuffle">
-            </button>
+            <button class="ctrl-btn" id="random-btn" onclick="sendCommand('toggle_random')" title="shuffle">&#10227;</button>
         </div>
         <div class="volume-container">
             <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5"
@@ -225,6 +232,17 @@
         // Clear session on page load so a browser refresh always acts as a "Reset to Home"
         sessionStorage.removeItem('tsp_started');
         sessionStorage.removeItem('tsp_played_projects');
+        sessionStorage.removeItem('tsp_ultra_random');
+
+        const ultraRandomBtn = document.getElementById('ultra-random-btn');
+        let ultraRandom = false;
+
+        function toggleUltraRandom() {
+            ultraRandom = !ultraRandom;
+            sessionStorage.setItem('tsp_ultra_random', ultraRandom ? 'true' : 'false');
+            ultraRandomBtn.classList.toggle('ultra-active', ultraRandom);
+            sendCommand('toggle_ultra_random', ultraRandom);
+        }
 
         function sendCommand(type, value = null) {
             if (iframe && iframe.contentWindow) {

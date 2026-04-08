@@ -6,6 +6,13 @@ const playlist = [
 
 const CURRENT_PROJECT = 'emom-mar26';
 const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary', 'emom-mar26'];
+const PROJECT_TRACK_COUNTS = { 'katherine': 6, 'sdp': 5, 'thanksgary': 5, 'emom-mar26': 1 };
+
+function getUltraStartTrack() {
+    if (sessionStorage.getItem('tsp_ultra_random') !== 'true') return 0;
+    const t = parseInt(new URLSearchParams(window.location.search).get('ultratrack'));
+    return isNaN(t) ? 0 : Math.min(t, playlist.length - 1);
+}
 
 function getVideoUrl(filename) {
     if (BASE_VIDEO_URL) {
@@ -14,7 +21,7 @@ function getVideoUrl(filename) {
     return `videos/${filename}`;
 }
 
-let currentIndex = 0;
+let currentIndex = getUltraStartTrack();
 let isPlaying = false;
 let isRandom = false;
 let isTransitioning = false;
@@ -71,7 +78,9 @@ window.addEventListener('message', (event) => {
             case 'next':         if (!isTransitioning) jumpToVideo(getNextIndex()); break;
             case 'prev':         if (!isTransitioning) jumpToVideo(getPrevIndex()); break;
             case 'set_volume':   setVolume(data.value); break;
-            case 'toggle_random':toggleRandom(); break;
+            case 'toggle_random':  toggleRandom(); break;
+            case 'toggle_ultra_random':
+                sessionStorage.setItem('tsp_ultra_random', data.value ? 'true' : 'false'); break;
         }
     }
 });
@@ -141,6 +150,13 @@ function onVideoEnded() {
 }
 
 function triggerRedirect() {
+    if (sessionStorage.getItem('tsp_ultra_random') === 'true') {
+        const next = ALL_PROJECTS[Math.floor(Math.random() * ALL_PROJECTS.length)];
+        const track = Math.floor(Math.random() * PROJECT_TRACK_COUNTS[next]);
+        window.location.href = `../${next}/index.html?ultratrack=${track}`;
+        return;
+    }
+
     let played = JSON.parse(sessionStorage.getItem('tsp_played_projects') || '[]');
     if (!played.includes(CURRENT_PROJECT)) played.push(CURRENT_PROJECT);
 
