@@ -301,7 +301,8 @@
         let isPlaying = false;
         let isRandom = false;
         let playedTracks = new Set();
-        const redirectTargets = ['../sdp/index.html'];
+        const CURRENT_PROJECT = 'thanksgary';
+        const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary'];
 
         // Initial Volume
         audioPlayer.volume = 0.5;
@@ -404,12 +405,19 @@
         }
 
         function triggerRedirect() {
-            if (redirectTargets.length > 0) {
-                const target = redirectTargets[Math.floor(Math.random() * redirectTargets.length)];
-                window.location.href = target;
-            } else {
-                window.location.href = '../sdp/index.html';
+            let played = JSON.parse(sessionStorage.getItem('tsp_played_projects') || '[]');
+            if (!played.includes(CURRENT_PROJECT)) played.push(CURRENT_PROJECT);
+
+            let remaining = ALL_PROJECTS.filter(p => !played.includes(p));
+            if (remaining.length === 0) {
+                // All projects played — reset cycle, pick any except current
+                played = [CURRENT_PROJECT];
+                remaining = ALL_PROJECTS.filter(p => p !== CURRENT_PROJECT);
             }
+
+            sessionStorage.setItem('tsp_played_projects', JSON.stringify(played));
+            const next = remaining[Math.floor(Math.random() * remaining.length)];
+            window.location.href = `../${next}/index.html`;
         }
 
         // --- 4. CONTROL FUNCTIONS ---

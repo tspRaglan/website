@@ -25,8 +25,8 @@ let isRandom = false;
 let isTransitioning = false;
 let playedTracks = new Set();
 
-// Redirect destinations when playlist ends
-const redirectTargets = ['../sdp/index.html'];
+const CURRENT_PROJECT = 'katherine';
+const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary'];
 
 // DOM Elements
 const videoA = document.getElementById('video-a');
@@ -185,10 +185,19 @@ function onVideoEnded() {
 }
 
 function triggerRedirect() {
-    const target = redirectTargets.length > 0
-        ? redirectTargets[Math.floor(Math.random() * redirectTargets.length)]
-        : '../sdp/index.html';
-    window.location.href = target;
+    let played = JSON.parse(sessionStorage.getItem('tsp_played_projects') || '[]');
+    if (!played.includes(CURRENT_PROJECT)) played.push(CURRENT_PROJECT);
+
+    let remaining = ALL_PROJECTS.filter(p => !played.includes(p));
+    if (remaining.length === 0) {
+        // All projects played — reset cycle, pick any except current
+        played = [CURRENT_PROJECT];
+        remaining = ALL_PROJECTS.filter(p => p !== CURRENT_PROJECT);
+    }
+
+    sessionStorage.setItem('tsp_played_projects', JSON.stringify(played));
+    const next = remaining[Math.floor(Math.random() * remaining.length)];
+    window.location.href = `../${next}/index.html`;
 }
 
 function jumpToVideo(index) {

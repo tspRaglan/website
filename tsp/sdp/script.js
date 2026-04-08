@@ -24,9 +24,8 @@ let isRandom = false;
 let isTransitioning = false;
 let playedTracks = new Set();
 
-// Configurable redirect destinations for future projects
-// If this list is empty, the script can be made to redirect to any sibling folder
-const redirectTargets = ['../thanksgary/index.html'];
+const CURRENT_PROJECT = 'sdp';
+const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary'];
 
 // DOM Elements
 const videoA = document.getElementById('video-a');
@@ -224,17 +223,19 @@ function onVideoEnded() {
 }
 
 function triggerRedirect() {
-    let target = '';
-    if (redirectTargets.length > 0) {
-        target = redirectTargets[Math.floor(Math.random() * redirectTargets.length)];
-    } else {
-        target = '../thanksgary/index.html';
+    let played = JSON.parse(sessionStorage.getItem('tsp_played_projects') || '[]');
+    if (!played.includes(CURRENT_PROJECT)) played.push(CURRENT_PROJECT);
+
+    let remaining = ALL_PROJECTS.filter(p => !played.includes(p));
+    if (remaining.length === 0) {
+        // All projects played — reset cycle, pick any except current
+        played = [CURRENT_PROJECT];
+        remaining = ALL_PROJECTS.filter(p => p !== CURRENT_PROJECT);
     }
 
-    // if in iframe, tell parent to change src or change our own href
-    // since we want to keep the root URL, we should ideally change the iframe src
-    // but a simple href change inside the iframe also keeps the root URL in the address bar!
-    window.location.href = target;
+    sessionStorage.setItem('tsp_played_projects', JSON.stringify(played));
+    const next = remaining[Math.floor(Math.random() * remaining.length)];
+    window.location.href = `../${next}/index.html`;
 }
 
 function jumpToVideo(index) {

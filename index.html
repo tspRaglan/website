@@ -193,6 +193,7 @@
 
         // Clear session on page load so a browser refresh always acts as a "Reset to Home"
         sessionStorage.removeItem('tsp_started');
+        sessionStorage.removeItem('tsp_played_projects');
 
         function sendCommand(type, value = null) {
             if (iframe && iframe.contentWindow) {
