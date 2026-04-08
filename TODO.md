@@ -7,7 +7,7 @@ This is a list of future features, fixes, and ideas for the **raglan.au** websit
 - [x] **Enforce HTTPS**: Enable the "Enforce HTTPS" toggle in GitHub Pages settings once DNS is verified.
 - [ ] **Backup website repo:** Ensure the repository for the website is properly backed up offline/online.
 - [ ] **Folder Structure Migration:** Migrate content from older build folders (`website/`, `website mar26/`) into the current live build (`website apr26/`) where relevant, and clean up/archive outdated folders.
-- [ ] **Final Netlify Purge:** Remove/delete the old Netlify site (`tspraglan.netlify.app`) now that hosting has moved to GitHub Pages. Confirm no DNS records or configs still point to Netlify.
+- [x] **Final Netlify Purge:** Netlify site deleted. DNS records verified — all clean, no Netlify remnants.
 
 ## 🎨 Design & Branding
 - [x] **Raglan Logo:** Integrate the official logo into the root "click to start" screen.
