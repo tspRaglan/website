@@ -9,7 +9,7 @@ const playlist = [
     { url: 'aqeuous.mp4',      title: 'aqeuous' },
     { url: 'katherine.mp4',    title: 'katherine' },
     { url: 'marymelody.mp4',   title: 'mary melody' },
-    { url: 'spirittheair.mp4', title: 'spirit the air', startTime: 132 },
+    { url: 'spirittheair.mp4', title: 'spirit the air' },
 ];
 
 function getVideoUrl(filename) {

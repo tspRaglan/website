@@ -11,7 +11,7 @@ this is a reusable template for a 5-video full-screen player with seamless trans
 
 ## bandwidth & compression
 
-**critical**: to stay within hosting limits (e.g. netlify's 100gb), all videos **must** be compressed before upload.
+**critical**: all videos **must** be compressed before upload to keep the repository size manageable for GitHub Pages.
 
 ### recommended ffmpeg command
 run this from your terminal to squash video size while keeping quality:
