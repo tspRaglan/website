@@ -1,4 +1,4 @@
-# thanksgary - Configuration & Settings
+# raglan.au - Configuration & Settings
 
 This document stores the essential settings for the website's hosting, domain, and version control.
 
@@ -9,12 +9,14 @@ This document stores the essential settings for the website's hosting, domain, a
 ---
 
 ## 📂 Project Info
-- **Local Folder:** `C:\tsp\Website\website apr26`
+- **Live folder:** `C:\tsp\Website\website\` — push from here
+- **Working folder:** `C:\tsp\Website\website apr26\` — edit here, copy to live when ready
 - **Default Landing:** `/tsp/katherine/`
 
 ## 🔗 Version Control (GitHub)
-- **Repository:** [tspRaglan/thanksgary](https://github.com/tspRaglan/thanksgary)
-- **Primary Branch:** `master`
+- **Repository:** [tspRaglan/website](https://github.com/tspRaglan/website)
+- **Live branch:** `master` — GitHub Pages deploys from here
+- **Working branches:** monthly (e.g. `apr26`, `may26`) — push regularly as backup
 - **Sync Tool:** GitHub Desktop & TortoiseGit (Windows Explorer)
 
 ## 🌐 Hosting (GitHub Pages)
@@ -42,9 +44,9 @@ These records are required in GoDaddy DNS Management for the site to function:
 | **NS** | `@` | `ns27.domaincontrol.com.` | GoDaddy nameserver (do not delete) |
 | **NS** | `@` | `ns28.domaincontrol.com.` | GoDaddy nameserver (do not delete) |
 
-## 🚀 How to Update
-1.  Make changes to the code in the local folder.
-2.  Open **GitHub Desktop** or **Right-Click** in Windows Explorer.
-3.  **Commit** your changes (save them locally).
-4.  **Push** your changes (upload them to GitHub).
-5.  GitHub Pages will automatically detect the push and update the live website.
+## 🚀 How to Deploy
+1. Make changes in the working folder (e.g. `website apr26\`)
+2. When ready to go live, copy changed files to `website\`
+3. Open `website\` in GitHub Desktop or TortoiseGit
+4. Commit with a descriptive message
+5. Push to `master` — GitHub Pages auto-deploys within ~30 seconds
