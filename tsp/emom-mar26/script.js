@@ -9,7 +9,6 @@ const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary', 'emom-mar26'];
 const PROJECT_TRACK_COUNTS = { 'katherine': 6, 'sdp': 5, 'thanksgary': 5, 'emom-mar26': 1 };
 
 function getUltraStartTrack() {
-    if (sessionStorage.getItem('tsp_ultra_random') !== 'true') return 0;
     const t = parseInt(new URLSearchParams(window.location.search).get('ultratrack'));
     return isNaN(t) ? 0 : Math.min(t, playlist.length - 1);
 }
@@ -75,12 +74,13 @@ window.addEventListener('message', (event) => {
         switch (data.command) {
             case 'start':        startExperience(false); break;
             case 'toggle_play':  togglePlayPause(); break;
-            case 'next':         if (!isTransitioning) jumpToVideo(getNextIndex()); break;
+            case 'next':
+                if (!isTransitioning) jumpToVideo(getNextIndex());
+                break;
             case 'prev':         if (!isTransitioning) jumpToVideo(getPrevIndex()); break;
             case 'set_volume':   setVolume(data.value); break;
             case 'toggle_random':  toggleRandom(); break;
-            case 'toggle_ultra_random':
-                sessionStorage.setItem('tsp_ultra_random', data.value ? 'true' : 'false'); break;
+            case 'ultra_jump':     jumpToRandomProject(); break;
         }
     }
 });
@@ -149,14 +149,44 @@ function onVideoEnded() {
     }
 }
 
-function triggerRedirect() {
-    if (sessionStorage.getItem('tsp_ultra_random') === 'true') {
-        const next = ALL_PROJECTS[Math.floor(Math.random() * ALL_PROJECTS.length)];
-        const track = Math.floor(Math.random() * PROJECT_TRACK_COUNTS[next]);
-        window.location.href = `../${next}/index.html?ultratrack=${track}`;
-        return;
-    }
+function jumpToRandomProject() {
+    let trackPlayed = JSON.parse(sessionStorage.getItem('tsp_ultra_track_played') || '[]');
+    let sitePlayed  = JSON.parse(sessionStorage.getItem('tsp_ultra_site_played')  || '[]');
 
+    const totalTracks = ALL_PROJECTS.reduce((sum, p) => sum + PROJECT_TRACK_COUNTS[p], 0);
+    if (trackPlayed.length >= totalTracks) { trackPlayed = []; sitePlayed = []; }
+
+    const availableSites = ALL_PROJECTS.filter(p => {
+        for (let i = 0; i < PROJECT_TRACK_COUNTS[p]; i++)
+            if (!trackPlayed.includes(`${p}:${i}`)) return true;
+        return false;
+    });
+
+    if (!sitePlayed.includes(CURRENT_PROJECT)) sitePlayed.push(CURRENT_PROJECT);
+
+    let siteRemaining = availableSites.filter(p => !sitePlayed.includes(p));
+    if (siteRemaining.length === 0) {
+        sitePlayed = availableSites.includes(CURRENT_PROJECT) ? [CURRENT_PROJECT] : [];
+        siteRemaining = availableSites.filter(p => !sitePlayed.includes(p));
+    }
+    if (siteRemaining.length === 0) siteRemaining = availableSites;
+
+    sessionStorage.setItem('tsp_ultra_site_played',  JSON.stringify(sitePlayed));
+
+    const nextSite = siteRemaining[Math.floor(Math.random() * siteRemaining.length)];
+
+    const unplayed = [];
+    for (let i = 0; i < PROJECT_TRACK_COUNTS[nextSite]; i++)
+        if (!trackPlayed.includes(`${nextSite}:${i}`)) unplayed.push(i);
+
+    const track = unplayed[Math.floor(Math.random() * unplayed.length)];
+    trackPlayed.push(`${nextSite}:${track}`);
+    sessionStorage.setItem('tsp_ultra_track_played', JSON.stringify(trackPlayed));
+
+    window.location.href = `../${nextSite}/index.html?ultratrack=${track}`;
+}
+
+function triggerRedirect() {
     let played = JSON.parse(sessionStorage.getItem('tsp_played_projects') || '[]');
     if (!played.includes(CURRENT_PROJECT)) played.push(CURRENT_PROJECT);
 
