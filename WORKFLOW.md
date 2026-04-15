@@ -7,30 +7,36 @@ This document tracks the standard process for updating and extending the raglan.
 ## 🗂️ Project Structure
 
 ```
-Development/Website/
-├── website mar26/       ← Previous build (archive)
-├── website apr26/       ← Current build (live source)
-│   ├── index.html       ← Root shell (logo splash + global player UI)
-│   ├── CONFIGURATION.md ← Hosting, DNS, GitHub settings
-│   ├── tsp/
-│   │   ├── sdp/         ← SDP video subproject
-│   │   ├── thanksgary/  ← Thanks Gary audio subproject
-│   │   └── katherine/   ← Katherine video subproject (added Apr 2026)
-│   └── templates/
-│       └── video-player-template/
+C:\Raglan\Website\
+├── website\             ← LIVE SITE — edit directly here, push to master
+├── website apr26\       ← April 2026 archive (plain snapshot, no git)
+├── website mar26\       ← March 2026 archive (plain snapshot, no git)
+├── TODO.md
+└── WORKFLOW.md
 ```
 
-**Hosting:** GitHub Pages → `raglan.au` | Auto-deploys from GitHub `tspRaglan/thanksgary` (`master` branch)
+**Hosting:** GitHub Pages → `raglan.au` | Repo: `tspRaglan/website` (`master` branch)
+
+**Rule:** Edit directly in `website\`. At the end of each month, copy `website\` to a new archive folder (e.g. `website may26\`) as a safety snapshot, then continue in `website\`.
 
 ---
 
 ## 🚀 How to Deploy Changes
 
-1. Make changes inside `website apr26/`
+1. Edit files directly in `website\`
 2. Open **GitHub Desktop** (or right-click in Explorer → TortoiseGit)
 3. **Commit** with a descriptive message
 4. **Push** to `master`
 5. GitHub Pages detects the push and goes live within ~30 seconds
+
+---
+
+## 📅 Starting a New Month (Archive + Continue)
+
+1. Copy `website\` to a new archive folder: `C:\Raglan\Website\website may26\`
+2. Continue editing in `website\` as normal
+3. The archive is a plain snapshot — no git setup needed
+4. If the live site ever gets corrupted, restore from the latest archive
 
 ---
 
