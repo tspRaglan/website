@@ -88,7 +88,7 @@ Raw videos exported from DaVinci Resolve are typically 100–200MB each and not 
 | Setting | Value | Reason |
 |---|---|---|
 | Codec | `libx264` | Universal browser support |
-| CRF | `26` | Good quality/size balance (~60–70% size reduction) |
+| CRF | `20` | High quality for web streaming (~5 Mbps target) |
 | Preset | `slow` | Better compression at same quality |
 | Audio | `aac 128k` | Stereo web-standard |
 | Max resolution | `1080p` | Capped, preserves original if smaller |
@@ -107,7 +107,7 @@ foreach ($f in $files) {
     $output  = Join-Path $outDir $outName
     Write-Host "Compressing: $($f.Name) -> $outName"
     ffmpeg -y -i $f.FullName `
-        -c:v libx264 -crf 26 -preset slow `
+        -c:v libx264 -crf 20 -preset slow `
         -c:a aac -b:a 128k `
         -movflags +faststart `
         -vf "scale=-2:min(1080\,ih)" `
