@@ -24,6 +24,7 @@ let currentIndex = getUltraStartTrack();
 let isPlaying = false;
 let isRandom = false;
 let isTransitioning = false;
+let ultraRandomMode = false;
 let playedTracks = new Set();
 
 const videoA = document.getElementById('video-a');
@@ -75,19 +76,28 @@ window.addEventListener('message', (event) => {
             case 'start':        startExperience(false); break;
             case 'toggle_play':  togglePlayPause(); break;
             case 'next':
-                if (!isTransitioning) jumpToVideo(getNextIndex());
+                if (!isTransitioning) {
+                    if (ultraRandomMode) jumpToRandomProject();
+                    else jumpToVideo(getNextIndex());
+                }
                 break;
             case 'prev':         if (!isTransitioning) jumpToVideo(getPrevIndex()); break;
             case 'set_volume':   setVolume(data.value); break;
             case 'toggle_random':  toggleRandom(); break;
-            case 'ultra_jump':     jumpToRandomProject(); break;
+            case 'ultra_jump':     if (!isTransitioning) jumpToRandomProject(); break;
+            case 'set_ultra_random': ultraRandomMode = data.value; break;
         }
     }
 });
 
 playPauseBtn.addEventListener('click', togglePlayPause);
 prevBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getPrevIndex()); });
-nextBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getNextIndex()); });
+nextBtn.addEventListener('click', () => {
+    if (!isTransitioning) {
+        if (ultraRandomMode) jumpToRandomProject();
+        else jumpToVideo(getNextIndex());
+    }
+});
 randomBtn.addEventListener('click', toggleRandom);
 volumeSlider.addEventListener('input', (e) => setVolume(e.target.value));
 
@@ -145,11 +155,15 @@ function getPrevIndex() {
 
 function onVideoEnded() {
     if (!isTransitioning) {
+        if (ultraRandomMode) { jumpToRandomProject(); return; }
         triggerRedirect();
     }
 }
 
 function jumpToRandomProject() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
     let trackPlayed = JSON.parse(sessionStorage.getItem('tsp_ultra_track_played') || '[]');
     let sitePlayed  = JSON.parse(sessionStorage.getItem('tsp_ultra_site_played')  || '[]');
 

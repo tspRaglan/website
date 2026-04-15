@@ -22,6 +22,7 @@ let currentIndex = getUltraStartTrack();
 let isPlaying = false;
 let isRandom = false;
 let isTransitioning = false;
+let ultraRandomMode = false;
 let playedTracks = new Set();
 
 const CURRENT_PROJECT = 'sdp';
@@ -95,7 +96,10 @@ window.addEventListener('message', (event) => {
                 togglePlayPause();
                 break;
             case 'next':
-                if (!isTransitioning) jumpToVideo(getNextIndex());
+                if (!isTransitioning) {
+                    if (ultraRandomMode) jumpToRandomProject();
+                    else jumpToVideo(getNextIndex());
+                }
                 break;
             case 'prev':
                 if (!isTransitioning) jumpToVideo(getPrevIndex());
@@ -106,7 +110,8 @@ window.addEventListener('message', (event) => {
             case 'toggle_random':
                 toggleRandom();
                 break;
-            case 'ultra_jump':     jumpToRandomProject(); break;
+            case 'ultra_jump':     if (!isTransitioning) jumpToRandomProject(); break;
+            case 'set_ultra_random': ultraRandomMode = data.value; break;
         }
     }
 });
@@ -115,7 +120,12 @@ window.addEventListener('message', (event) => {
 startBtn.addEventListener('click', startExperience);
 playPauseBtn.addEventListener('click', togglePlayPause);
 prevBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getPrevIndex()) });
-nextBtn.addEventListener('click', () => { if (!isTransitioning) jumpToVideo(getNextIndex()); });
+nextBtn.addEventListener('click', () => {
+    if (!isTransitioning) {
+        if (ultraRandomMode) jumpToRandomProject();
+        else jumpToVideo(getNextIndex());
+    }
+});
 randomBtn.addEventListener('click', toggleRandom);
 volumeSlider.addEventListener('input', (e) => setVolume(e.target.value));
 
@@ -220,6 +230,7 @@ function preloadNext() {
 
 function onVideoEnded() {
     if (!isTransitioning) {
+        if (ultraRandomMode) { jumpToRandomProject(); return; }
         const nextIdx = getNextIndex();
         if (nextIdx === -1) { triggerRedirect(); return; }
         jumpToVideo(nextIdx);
@@ -227,6 +238,9 @@ function onVideoEnded() {
 }
 
 function jumpToRandomProject() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
     let trackPlayed = JSON.parse(sessionStorage.getItem('tsp_ultra_track_played') || '[]');
     let sitePlayed  = JSON.parse(sessionStorage.getItem('tsp_ultra_site_played')  || '[]');
 

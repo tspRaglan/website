@@ -101,10 +101,14 @@
         }
 
         #ultra-random-logo {
-            width: 26px;
-            height: 26px;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            animation: logoPulse 4s infinite ease-in-out, logoGlow 8s infinite linear;
+            filter: drop-shadow(0 0 1px white) drop-shadow(0 0 1px white);
+        }
+
+        #ultra-random-btn {
+            padding: 4px;
         }
 
         #ultra-random-btn.ultra-active {
@@ -238,6 +242,7 @@
 
         const ultraRandomBtn = document.getElementById('ultra-random-btn');
         let isRandom = false;
+        let ultraRandomMode = false;
 
         function toggleRandom() {
             isRandom = !isRandom;
@@ -246,10 +251,17 @@
         }
 
         function jumpUltraRandom() {
-            ultraRandomBtn.classList.add('ultra-active');
-            setTimeout(() => ultraRandomBtn.classList.remove('ultra-active'), 600);
-            sendCommand('ultra_jump');
+            ultraRandomMode = !ultraRandomMode;
+            ultraRandomBtn.classList.toggle('ultra-active', ultraRandomMode);
+            sendCommand('set_ultra_random', ultraRandomMode);
         }
+
+        // Re-send ultra random mode when iframe navigates to a new project
+        iframe.addEventListener('load', () => {
+            if (ultraRandomMode) {
+                setTimeout(() => sendCommand('set_ultra_random', true), 150);
+            }
+        });
 
         function sendCommand(type, value = null) {
             if (iframe && iframe.contentWindow) {

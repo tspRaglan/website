@@ -304,13 +304,14 @@
         let audioPlayer = new Audio();
         let isPlaying = false;
         let isRandom = false;
+        let ultraRandomMode = false;
+        let isJumping = false;
         let playedTracks = new Set();
         const CURRENT_PROJECT = 'thanksgary';
         const ALL_PROJECTS = ['katherine', 'sdp', 'thanksgary', 'emom-mar26'];
         const PROJECT_TRACK_COUNTS = { 'katherine': 6, 'sdp': 5, 'thanksgary': 5, 'emom-mar26': 1 };
 
         function getUltraStartTrack() {
-            if (sessionStorage.getItem('tsp_ultra_random') !== 'true') return -1;
             const t = parseInt(new URLSearchParams(window.location.search).get('ultratrack'));
             return isNaN(t) ? -1 : Math.min(t, playlist.length - 1);
         }
@@ -368,7 +369,10 @@
                         toggleRandom();
                         break;
                     case 'ultra_jump':
-                        jumpToRandomProject();
+                        if (!isJumping) jumpToRandomProject();
+                        break;
+                    case 'set_ultra_random':
+                        ultraRandomMode = data.value;
                         break;
                 }
             }
@@ -419,6 +423,9 @@
         }
 
         function jumpToRandomProject() {
+            if (isJumping) return;
+            isJumping = true;
+
             let trackPlayed = JSON.parse(sessionStorage.getItem('tsp_ultra_track_played') || '[]');
             let sitePlayed  = JSON.parse(sessionStorage.getItem('tsp_ultra_site_played')  || '[]');
 
@@ -473,6 +480,7 @@
 
         // --- 4. CONTROL FUNCTIONS ---
         function playNext() {
+            if (ultraRandomMode) { jumpToRandomProject(); return; }
             const nextIdx = getNextIndex();
             if (nextIdx === -1) {
                 triggerRedirect();
@@ -526,10 +534,6 @@
                 currentIndex = ultraTrack;
             } else {
                 shuffle(playlist);
-                const garyIndex = playlist.findIndex(track => track.title === 'thanks gary!');
-                if (garyIndex > 0) {
-                    [playlist[0], playlist[garyIndex]] = [playlist[garyIndex], playlist[0]];
-                }
                 currentIndex = 0;
             }
             loadTrack(currentIndex);
