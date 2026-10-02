@@ -7,3 +7,7 @@
 *.wav
 *.mov
 *.avi
+
+# Exception for root landing page audio (1.5MB)
+!EndMusic.mp3
+

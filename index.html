@@ -3,295 +3,146 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>raglan.au</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         body,
         html {
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;
             background-color: black;
+            overflow: hidden;
+            overscroll-behavior: none;
             font-family: 'Courier New', Courier, monospace;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-
-        /* --- IFRAME SHELL --- */
-        #main-shell {
+        /* ── FULL SCREEN CLICK TARGET ── */
+        #start-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-            z-index: 10;
-            overflow: hidden;
-        }
-
-        /* --- GLOBAL PLAYER UI (on Root Shell) --- */
-        #player-shell-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            display: none;
-            text-align: center;
-            width: 290px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 12px 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s;
-            pointer-events: auto;
-        }
-
-        #track-title {
-            color: white;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            font-weight: normal;
-            display: block;
-            text-shadow: 1px 1px 2px black;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            margin: 0 auto 10px auto;
-        }
-
-        .controls-row {
+            inset: 0;
             display: flex;
-            gap: 8px;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .ctrl-btn {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 8px;
             cursor: pointer;
-            font-size: 1.2rem;
-            border-radius: 8px;
-            transition: all 0.2s;
+            /* Safe area padding so content clears notches / home indicator */
+            padding-bottom: max(24px, env(safe-area-inset-bottom));
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        /* ── LOGO ── */
+        #logo-container {
+            /* Scales elegantly across all devices:
+               - Desktop: up to 500px
+               - Mobile portrait: 80% of the narrower dimension
+               - Mobile landscape: 80% of the shorter (height) dimension */
+            width: min(500px, 80vmin);
+            height: min(500px, 80vmin);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 44px;
-            height: 44px;
         }
 
-        .ctrl-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: white;
-        }
-
-        .ctrl-btn.active-random {
-            background: rgba(255, 255, 255, 0.9);
-            color: black;
-            border-color: black;
-        }
-
-        #ultra-random-logo {
+        #raglan-logo {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 0 1px white) drop-shadow(0 0 1px white);
+            animation: pulse 4s infinite ease-in-out, glowCycle 8s infinite linear;
         }
 
-        #ultra-random-btn {
-            padding: 4px;
+        @keyframes pulse {
+            0%,
+            100% { transform: scale(1.0); }
+            50%   { transform: scale(1.06); }
         }
 
-        #ultra-random-btn.ultra-active {
-            background: rgba(0, 200, 255, 0.15);
-            border-color: rgba(0, 200, 255, 0.8);
-            box-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
+        @keyframes glowCycle {
+            0%   { filter: sepia(1) saturate(20) hue-rotate(0deg)   drop-shadow(0 0 15px #00f2ff); }
+            33%  { filter: sepia(1) saturate(20) hue-rotate(90deg)  drop-shadow(0 0 20px #7000ff); }
+            66%  { filter: sepia(1) saturate(20) hue-rotate(240deg) drop-shadow(0 0 25px #ff00c8); }
+            100% { filter: sepia(1) saturate(20) hue-rotate(360deg) drop-shadow(0 0 15px #00f2ff); }
         }
 
-        #ultra-random-btn.ultra-active #ultra-random-logo {
-            animation: logoPulse 1.5s infinite ease-in-out, logoGlowFast 3s infinite linear;
-        }
 
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1.0); }
-            50%       { transform: scale(1.12); }
-        }
 
-        @keyframes logoGlow {
-            0%   { filter: sepia(1) saturate(20) hue-rotate(0deg)   drop-shadow(0 0 4px currentColor); color: #00f2ff; }
-            33%  { filter: sepia(1) saturate(20) hue-rotate(90deg)  drop-shadow(0 0 6px currentColor); color: #7000ff; }
-            66%  { filter: sepia(1) saturate(20) hue-rotate(240deg) drop-shadow(0 0 8px currentColor); color: #ff00c8; }
-            100% { filter: sepia(1) saturate(20) hue-rotate(360deg) drop-shadow(0 0 4px currentColor); color: #00f2ff; }
-        }
-
-        @keyframes logoGlowFast {
-            0%   { filter: sepia(1) saturate(30) hue-rotate(0deg)   drop-shadow(0 0 10px currentColor); color: #00f2ff; }
-            33%  { filter: sepia(1) saturate(30) hue-rotate(90deg)  drop-shadow(0 0 16px currentColor); color: #7000ff; }
-            66%  { filter: sepia(1) saturate(30) hue-rotate(240deg) drop-shadow(0 0 20px currentColor); color: #ff00c8; }
-            100% { filter: sepia(1) saturate(30) hue-rotate(360deg) drop-shadow(0 0 10px currentColor); color: #00f2ff; }
-        }
-
-        .volume-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-
-        input[type=range] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: #ffffff;
-            -webkit-appearance: none;
-            margin-top: -5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        @media (max-width: 600px) {
-            #player-shell-container {
-                bottom: 12px;
-                right: 12px;
-                width: 260px;
-                padding: 10px 12px;
-            }
-
-            .ctrl-btn {
-                min-width: 64px;
-                height: 64px;
-                font-size: 1.6rem;
-                border-radius: 10px;
-            }
-
-            .controls-row {
-                gap: 12px;
-                margin-bottom: 12px;
-            }
-
-            #track-title {
-                font-size: 1rem;
-                margin-bottom: 10px;
-            }
-
-            input[type=range]::-webkit-slider-thumb {
-                height: 24px;
-                width: 24px;
-                margin-top: -9px;
-            }
+        /* ── PLAYING STATE — subtle logo pulse speeds up ── */
+        #raglan-logo.playing {
+            animation: pulse 2.5s infinite ease-in-out, glowCycle 8s infinite linear;
         }
     </style>
 </head>
 
 <body>
-    <!-- start screen is handled inside the active subproject iframe -->
 
-    <iframe id="main-shell" src="tsp/katherine/index.html" allow="autoplay; fullscreen"></iframe>
-
-    <div id="player-shell-container">
-        <span id="track-title">loading...</span>
-        <div class="controls-row">
-            <button class="ctrl-btn" id="ultra-random-btn" onclick="jumpUltraRandom()" title="ultra random">
-                <img src="tsp/katherine/assets/RaglanLogoTransparentWhite.png" id="ultra-random-logo" alt="ultra random">
-            </button>
-            <button class="ctrl-btn" onclick="sendCommand('prev')" title="previous">&#9198;</button>
-            <button class="ctrl-btn" id="play-pause-btn" onclick="sendCommand('toggle_play')" title="play/pause">&#9654;</button>
-            <button class="ctrl-btn" onclick="sendCommand('next')" title="next">&#9197;</button>
-            <button class="ctrl-btn" id="random-btn" onclick="toggleRandom()" title="shuffle">&#10227;</button>
-        </div>
-        <div class="volume-container">
-            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5"
-                oninput="sendCommand('set_volume', this.value)">
+    <div id="start-screen" onclick="startExperience()">
+        <div id="logo-container">
+            <img src="assets/RaglanLogoTransparentWhite.png" id="raglan-logo" alt="raglan">
         </div>
     </div>
 
+    <!-- Background audio — src set by JS below for easy swapping between local/R2 -->
+    <audio id="bg-audio" loop preload="auto"></audio>
+
     <script>
-        const iframe = document.getElementById('main-shell');
-        const playerUI = document.getElementById('player-shell-container');
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const randomBtn = document.getElementById('random-btn');
-        const trackTitle = document.getElementById('track-title');
+        // ── CONFIG ──────────────────────────────────────────────────────────
+        // Switch between local test file and R2 URL here when ready to go live
+        const AUDIO_SRC_LOCAL = 'EndMusic.mp3';
+        const AUDIO_SRC_R2    = ''; // set to 'https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev/EndMusic.mp3' when uploaded to R2
 
-        // Clear session on page load so a browser refresh always acts as a "Reset to Home"
-        sessionStorage.removeItem('tsp_started');
-        sessionStorage.removeItem('tsp_played_projects');
-        sessionStorage.removeItem('tsp_ultra_site_played');
-        sessionStorage.removeItem('tsp_ultra_track_played');
+        const AUDIO_SRC = AUDIO_SRC_R2 || AUDIO_SRC_LOCAL;
+        const AUDIO_VOLUME = 0.85; // 0.0 – 1.0
+        // ────────────────────────────────────────────────────────────────────
 
-        const ultraRandomBtn = document.getElementById('ultra-random-btn');
-        let isRandom = false;
-        let ultraRandomMode = false;
+        const audio   = document.getElementById('bg-audio');
+        const logo    = document.getElementById('raglan-logo');
+        let   started = false;
 
-        function toggleRandom() {
-            isRandom = !isRandom;
-            randomBtn.classList.toggle('active-random', isRandom);
-            sendCommand('toggle_random');
-        }
+        audio.src    = AUDIO_SRC;
+        audio.volume = AUDIO_VOLUME;
 
-        function jumpUltraRandom() {
-            ultraRandomMode = !ultraRandomMode;
-            ultraRandomBtn.classList.toggle('ultra-active', ultraRandomMode);
-            sendCommand('set_ultra_random', ultraRandomMode);
-        }
-
-        // Re-send ultra random mode when iframe navigates to a new project
-        iframe.addEventListener('load', () => {
-            if (ultraRandomMode) {
-                setTimeout(() => sendCommand('set_ultra_random', true), 150);
-            }
+        // Attempt silent unmuted autoplay on load
+        window.addEventListener('load', () => {
+            audio.play().then(() => {
+                started = true;
+                logo.classList.add('playing');
+            }).catch(() => {
+                // Autoplay blocked by browser policy — waiting for tap on Raglan man
+            });
         });
 
-        function sendCommand(type, value = null) {
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ type: 'tsp_command', command: type, value: value }, '*');
+        // Tap the Raglan man to start (or toggle play/pause)
+        function startExperience() {
+            if (!started) {
+                audio.play().then(() => {
+                    started = true;
+                    logo.classList.add('playing');
+                }).catch(e => {
+                    console.warn('Playback failed:', e);
+                });
+            } else {
+                if (audio.paused) {
+                    audio.play();
+                    logo.classList.add('playing');
+                } else {
+                    audio.pause();
+                    logo.classList.remove('playing');
+                }
             }
         }
-
-
-        function showExperience() {
-            playerUI.style.display = 'block';
-        }
-
-        // Listen for updates from subprojects
-        window.addEventListener('message', (event) => {
-            const data = event.data;
-            if (data.type === 'tsp_autoplay_success') {
-                showExperience();
-            }
-            if (data.type === 'tsp_track_update') {
-                trackTitle.innerText = data.title;
-            }
-            if (data.type === 'tsp_state_update') {
-                playPauseBtn.innerHTML = data.isPlaying ? '&#9646;&#9646;' : '&#9654;';
-                isRandom = data.isRandom;
-                randomBtn.classList.toggle('active-random', isRandom);
-            }
-        });
-
-        document.getElementById('main-shell').style.display = 'block';
     </script>
+
 </body>
 
 </html>

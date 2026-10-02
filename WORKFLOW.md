@@ -1,23 +1,37 @@
 # raglan.au — Website Update Workflow
-
-This document tracks the standard process for updating and extending the raglan.au website.
+**Last updated: October 2026**
 
 ---
 
-## 🗂️ Project Structure
+## 🗂️ Folder Structure
 
 ```
-C:\Raglan\Website\
-├── website\             ← LIVE SITE — edit directly here, push to master
+D:\Dropbox\Development\Website\
+├── website\             ← LIVE SITE — edit here, push to master
+├── website oct26\       ← October 2026 archive (Apr 2026 build, plain snapshot)
 ├── website apr26\       ← April 2026 archive (plain snapshot, no git)
 ├── website mar26\       ← March 2026 archive (plain snapshot, no git)
 ├── TODO.md
 └── WORKFLOW.md
 ```
 
+**Rule:** Edit directly in `website\`. At the end of each month, copy `website\` to a new archive folder (e.g. `website nov26\`) as a snapshot, then continue editing in `website\`.
+
 **Hosting:** GitHub Pages → `raglan.au` | Repo: `tspRaglan/website` (`master` branch)
 
-**Rule:** Edit directly in `website\`. At the end of each month, copy `website\` to a new archive folder (e.g. `website may26\`) as a safety snapshot, then continue in `website\`.
+---
+
+## 🔁 Current State (October 2026 Relaunch)
+
+The site has been rebuilt from scratch as a clean landing page.
+
+**What's live:** Raglan logo + looping background audio (`EndMusic`)
+
+**What's dormant (in `tsp\` folder, not linked):**
+- `tsp/katherine/` — will be re-added ~Week 2
+- `tsp/sdp/`       — will be re-added week by week
+- `tsp/thanksgary/`— will be re-added week by week
+- `tsp/emom-mar26/`— will be re-added week by week
 
 ---
 
@@ -31,118 +45,97 @@ C:\Raglan\Website\
 
 ---
 
+## 🎵 Audio Files
+
+All audio/video is hosted on **Cloudflare R2** — never committed to GitHub.
+
+- Bucket: `raglan-videos`
+- Public URL: `https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev`
+- rclone remote: `r2:raglan-videos/`
+- Account: `Tsp@raglan.au`
+
+### Converting audio before R2 upload
+
+**Source:** `D:\Dropbox\Music & Audio\Production Assets\Ropable Music\EndMusic.wav`
+
+For web delivery with maximum quality (lossless-transparent):
+```powershell
+ffmpeg -i "EndMusic.wav" -c:a libmp3lame -q:a 0 "EndMusic.mp3"
+# -q:a 0 = VBR highest quality (~320kbps equivalent), perceptually lossless
+```
+
+Or AAC (smaller file, same perceived quality, excellent browser support):
+```powershell
+ffmpeg -i "EndMusic.wav" -c:a aac -b:a 256k -movflags +faststart "EndMusic.m4a"
+```
+
+### R2 upload command
+```powershell
+rclone copyto EndMusic.mp3 r2:raglan-videos/EndMusic.mp3 --ignore-times --progress
+```
+
+### Swap local → R2 in index.html
+```js
+// In website/index.html, in the CONFIG block:
+const AUDIO_SRC_LOCAL = 'EndMusic.wav';                              // local test
+const AUDIO_SRC_R2    = 'https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev/EndMusic.mp3'; // live
+```
+When `AUDIO_SRC_R2` is set, it takes priority automatically.
+
+---
+
+## ➕ Re-adding a Subproject (Week-by-Week Plan)
+
+Each week, reconnect one subproject to the landing page rotation.
+
+### Steps:
+1. Verify the subproject's R2 media still loads (open its `index.html` locally)
+2. Update `website\index.html` to load the subproject (iframe + shell player)
+3. Apply scaling fixes (see audit report) before re-adding
+4. Test on mobile before pushing to master
+
+### Official Calendar Alignment (from Master Calendar & 13-Week Social Plan):
+| Window | Event / Drop | Catalog # | Destination / Role |
+|---|---|---|---|
+| **Oct 02 – Oct 08** | **Prep Week / Landing Launch** | — | `raglan.au` (Raglan logo + EndMusic audio loop) |
+| **Oct 09 – Oct 15** | **Week 01: Thanks Gary! Launch** | `01` | `raglan.au/tsp/thanksgary` |
+| **Oct 16 – Oct 22** | **Week 02: SDP (wefmyeyeafterward)** | `02` | `raglan.au/tsp/sdp` |
+| **Oct 23 – Oct 29** | **Week 03: Katherine** | `03` | `raglan.au/tsp/katherine` |
+| **Oct 30 – Nov 05** | **Week 04: ktay5 (Hero Launch)** | `10` | 🚀 **New Release drops Nov 1!** `raglan.au` |
+| **Nov 06 – Nov 12** | **Week 05: Bosse** | `04` | Downtempo funk retrospective |
+| **Nov 13 – Nov 19** | **Week 06: Splosh!** | `04.5` | Aquatic psych-funk |
+| **Nov 20 – Nov 26** | **Week 07: Dumth** | `05` | Modular low-end breakdowns |
+| **Nov 27 – Dec 03** | **Week 08: Bluzz Bluzzards (Launch)** | `11` | 🚀 **New Release drops Dec 1!** `raglan.au` |
+| **Dec 04 – Dec 10** | **Week 09: Qius** | `06` | Unity animation test fusion |
+| **Dec 11 – Dec 17** | **Week 10: Dawn Reed** | `07` | Atmospheric jazz-funk layers |
+| **Dec 18 – Dec 24** | **Week 11: Nübißno** | `08` | Micro-timing / polyrhythms |
+| **Dec 25 – Dec 31** | **Week 12: Pluppy Liebe** | `09` | Quirky synth explorations |
+| **Jan 01 – Jan 07** | **Week 13: 2027 Kickoff** | TBC | Retrospective compilation |
+
+---
+
 ## 📅 Starting a New Month (Archive + Continue)
 
-1. Copy `website\` to a new archive folder: `C:\Raglan\Website\website may26\`
+1. Copy `website\` to a new archive folder: `website nov26\`
 2. Continue editing in `website\` as normal
 3. The archive is a plain snapshot — no git setup needed
-4. If the live site ever gets corrupted, restore from the latest archive
 
 ---
 
-## ➕ Adding a New Subproject
+## 🏗️ Architecture Notes (Landing Page)
 
-Follow this pattern each time a new artist/EP page is needed.
-
-### 1. Create a new website build folder
-```powershell
-Copy-Item -Path "C:\tsp\Development\Website\website apr26" `
-          -Destination "C:\tsp\Development\Website\website [month][year]" `
-          -Recurse -Force
-```
-
-### 2. Scaffold the subproject folder
-```powershell
-New-Item -ItemType Directory -Force `
-    -Path "C:\tsp\Development\Website\website [month][year]\tsp\[projectname]\videos"
-```
-
-Create these files inside the new folder:
-- `index.html` — copy from an existing subproject (e.g. `sdp/`)
-- `styles.css` — copy from `sdp/`
-- `script.js` — copy from `sdp/`, then clear the playlist array
-
-### 3. Upload raw video assets
-Drop raw `.mp4` files into `tsp/[projectname]/videos/`
-Naming convention: `[trackname]R.mp4` (R = Raw)
-
-### 4. Compress videos for web (see section below)
-
-### 5. Populate the playlist in `script.js`
-```js
-const playlist = [
-    { url: 'compressed/trackname.mp4', title: 'track name' },
-];
-```
-
-### 6. (Optional) Update root `index.html` iframe src
-To make a subproject the default landing experience:
-```html
-<iframe id="main-shell" src="tsp/[projectname]/index.html" ...>
-```
-
-### 7. Copy a favicon into the subproject folder
-- Use `favicon.png` from the root or create a custom one
-
----
-
-## 🎬 Video Compression (FFmpeg)
-
-Raw videos exported from DaVinci Resolve are typically 100–200MB each and not optimised for streaming. Always compress before publishing.
-
-### Settings used
-| Setting | Value | Reason |
-|---|---|---|
-| Codec | `libx264` | Universal browser support |
-| CRF | `20` | High quality for web streaming (~5 Mbps target) |
-| Preset | `slow` | Better compression at same quality |
-| Audio | `aac 128k` | Stereo web-standard |
-| Max resolution | `1080p` | Capped, preserves original if smaller |
-| Faststart | `+faststart` | Enables playback before full download |
-
-### PowerShell batch script
-```powershell
-$inDir  = "C:\tsp\Development\Website\website [month][year]\tsp\[project]\videos"
-$outDir = "$inDir\compressed"
-New-Item -ItemType Directory -Force -Path $outDir | Out-Null
-
-$files = Get-ChildItem -Path $inDir -Filter "*R.mp4"
-
-foreach ($f in $files) {
-    $outName = $f.Name -replace 'R\.mp4$', '.mp4'
-    $output  = Join-Path $outDir $outName
-    Write-Host "Compressing: $($f.Name) -> $outName"
-    ffmpeg -y -i $f.FullName `
-        -c:v libx264 -crf 20 -preset slow `
-        -c:a aac -b:a 128k `
-        -movflags +faststart `
-        -vf "scale=-2:min(1080\,ih)" `
-        $output
-    Write-Host "Done: $outName"
-}
-Write-Host "All files compressed."
-```
-
-Output files land in `videos/compressed/` — **do not delete the originals (R files).**
-
----
-
-## 🏗️ Architecture Notes
-
-- **Shell + iframe**: `index.html` is a permanent shell. Subprojects load inside a full-screen `<iframe>`.
-- **postMessage protocol**: Subprojects communicate with the shell via `window.postMessage`.
-  - `tsp_autoplay_success` → shell hides splash, shows player
-  - `tsp_track_update` → shell updates track title display
-  - `tsp_state_update` → shell syncs play/pause & random button state
-  - `tsp_command` → shell sends play/pause/next/prev/volume to subproject
-- **sessionStorage**: `tsp_started` flag prevents re-showing the splash on navigation between subprojects.
-- **Cloudflare R2**: **All media files (`.mp4`, `.mp3`, `.wav`) must be uploaded to R2** — do not rely on GitHub Pages to serve them. Set `BASE_VIDEO_URL` in each subproject's script to `https://pub-3ed2bcf66a6d49cf88d8802c420af955.r2.dev`. Upload with: `rclone copyto <file> r2:raglan-videos/<filename> --ignore-times --progress`
+- **No iframe** — the landing page is now a single standalone `index.html`
+- **Audio element** — `<audio loop preload="auto">` with JS autoplay attempt
+- **Click-to-start** — logo click triggers `audio.play()` for browsers that block autoplay
+- **Logo:** `assets/RaglanLogoTransparentWhite.png` (copied from katherine)
+- **Scaling:** `vmin`-based logo sizing, `env(safe-area-inset-*)` for notch phones, `overscroll-behavior: none`
 
 ---
 
 ## 📅 Build History
 
-| Build | Date | Key Changes |
+| Build | Folder | Key Changes |
 |---|---|---|
-| `website mar26` | March 2026 | Initial build: SDP + Thanks Gary, centralised player shell, Raglan logo splash |
-| `website apr26` | April 2026 | Added Katherine subproject (6 videos, FFmpeg compressed). Katherine set as default landing page. |
+| March 2026 | `website mar26\` | Initial: SDP + Thanks Gary, shell+iframe |
+| April 2026 | `website apr26\` | Katherine, emom, ultra random jukebox |
+| October 2026 | `website\` | Relaunch: clean landing page, scaling overhaul |
